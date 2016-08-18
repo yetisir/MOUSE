@@ -1,10 +1,11 @@
-from . import Modules
+from Modules import HomogenizationModuleBaseClass
+import argparse
 
-class HODS_Module (Modules.HomogenizationModuleBaseClass):
+class HODS_Module (HomogenizationModuleBaseClass):
     def __init__(self):
         program = 'python HODS.py'
         parameters = {}
-        HomogenizationModuleBaseClass.__init__(program, parameters)
+        HomogenizationModuleBaseClass.__init__(self, program, parameters)
         
     def parseInput(self):
         return self.loadData()

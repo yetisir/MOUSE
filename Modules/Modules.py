@@ -4,12 +4,12 @@ import pickle
 
 
 class ModuleBaseClass(object):
-    def __init__(self, program, parameters = {}, supressText = False, supressErrors = True):
+    def __init__(self, program, parameters = {}, suppressText = False, suppressErrors = True):
         self.program = program
         self.parameters = parameters
         
-        self.supressText = supressText
-        self.supressErrors = supressErrors
+        self.suppressText = suppressText
+        self.suppressErrors = suppressErrors
         
         topDirectory = os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
         dataDirectory =  os.path.join(topDirectory, 'Data')
@@ -17,7 +17,7 @@ class ModuleBaseClass(object):
         self.textDirectory = os.path.join(dataDirectory, 'Text')
 
     def printText(self, text):
-        if not self.supressText:
+        if not self.suppressText:
             print(text)
         #else save to file
     
@@ -39,7 +39,7 @@ class ModuleBaseClass(object):
         os.system('cls')
         
     def printErrors(self, error):
-        if not self.supressErrors:
+        if not self.suppressErrors:
             self.printText(error)
             
     def saveData(self, data):
@@ -77,6 +77,8 @@ class ModuleBaseClass(object):
     def outputFileName(self):
         pass
             
+    def setParameters(self):
+        pass
 
 class DemModuleBaseClass(ModuleBaseClass):
     def __init__(self, program, parameters):
@@ -111,15 +113,16 @@ class ContinuumModuleBaseClass(ModuleBaseClass):
     def outputFileName(self, data):
         pass
 
-class HomogenizationBaseClass(ModuleBaseClass):
+class HomogenizationModuleBaseClass(ModuleBaseClass):
     def __init__(self, program, parameters):
-        ModuleBaseClass.__init__(program, parameters)
+        ModuleBaseClass.__init__(self, program, parameters)
+        self.type = 'Homogenization'
             
-    def inputFileName(self, data):
-        return 'testIn.pkl'
+    def inputFileName(self):
+        return os.path.join(self.binaryDirectory, 'voronoiGranite(0.0)_DEM.pkl')
             
-    def outputFileName(self, data):       
-        return 'testOut.pkl'
+    def outputFileName(self):       
+        return os.path.join(self.binaryDirectory, 'testOut.pkl')
 
 
     
