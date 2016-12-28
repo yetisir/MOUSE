@@ -1,30 +1,32 @@
 from Modules import HomogenizationModuleBaseClass
 import argparse
+import os
+import pickle
 
-class HODS_Module (HomogenizationModuleBaseClass):
-    def __init__(self):
-        program = 'python HODS.py'
+class ABAQUS_Module (ContinuumModuleBaseClass):
+    def __init__(self, baseName):
+        program = 'abaqus cae nogui=runAbaqus.py'
         parameters = {}
-        HomogenizationModuleBaseClass.__init__(self, program, parameters)
+        ContinuumModuleBaseClass.__init__(self, program, parameters, baseName)
         
     def parseInput(self):
         return self.loadData()
         
     def formatOutput(self):
-        print('Saving homogenization time history:')
-        fileName = '{0}({1}.{2})'.format(modelData.modelName, parameterizationRun, cStressIndex)
-
-        bundle = [timeHistory, stressHistory, strainHistory]
-        with open(os.path.join('HOMOGENIZE', 'binaryData', fileName+'_homogenizedData.pkl'), 'wb') as bundleFile:
+        self.printText('Saving homogenization time history:')
+        #fileName = '{0}({1}.{2})'.format(modelData.modelName, parameterizationRun, cStressIndex)
+        fileName = self.outputFileName()
+        bundle = [self.timeHistory, self.stressHistory, self.strainHistory]
+        with open(self.outputFileName(), 'wb') as bundleFile:
             pickle.dump(bundle, bundleFile)
-        print('\tDone')
+        self.printText('\tDone')
             
     def setParameters(self, revCentreX=None, revCentreY=None, revRadius=None):
         self.revCentreX = revCentreX
         self.revCentreY = revCentreY
         self.revRadius = revRadius
-        
-        #TODO: assess thes parameters from data
+            
+        #TODO: assess these parameters from data
         if revCentreX == None:
             self.revCentreX = modelData.modelSize/2
         if revCentreY == None:
@@ -34,15 +36,13 @@ class HODS_Module (HomogenizationModuleBaseClass):
         revCentre = {'x':revCentreX, 'y':revCentreY}
         
     def run(self):
-        dataClass = self.parseInput()
+        pickleData = self.parseInput()
         self.clearScreen()
-
-        for i in range(len(modelData.simulationTime)): #TODO: assess simlation time from data
-            for j in range(len(modelData.confiningStress)): #TODO: assess confining stress from data
-                H = Homogenize.Homogenize(revCentre, revRadius, dataClass=self.dataClass)
-                stressHistory = H.stress()
-                strainHistory = H.strain()
-                timeHistory = H.time()
+            
+        H = Homogenize(self.revCentre, self.revRadius, pickleData=pickleData)
+        self.stressHistory = H.stress()
+        self.strainHistory = H.strain()
+        self.timeHistory = H.time()
                 
         self.formatOutput()
         
@@ -59,13 +59,12 @@ class HODS_Module (HomogenizationModuleBaseClass):
     def parseArguments(self):
         arguments = self.parser.parse_args()
         self.modelName = arguments.name
-        self.revCentreX = arguments.revX
-        self.revCentreY = arguments.revY
+        self.revCentre = {'x':arguments.revX, 'y':arguments.revY}
         self.revRadius = arguments.revRadius
         self.interpolate = arguments.interpolate
     
 if __name__ == '__main__':
-    M = HODS_Module()
+    M = HODS_Module('voronoiGranite(0.0)')
     M.createArgumentParser()
     M.parseArguments()
     M.run()

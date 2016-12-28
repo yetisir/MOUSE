@@ -7,7 +7,7 @@ import math
 import pickle
 
 class DataSet(object):
-    def __init__(self, dataClass=None, fileName=None, loadBinary=True):
+    def __init__(self, dataClass=None, pickleData=None, fileName=None, loadBinary=True):
         if fileName:
             self.fileName = fileName
             print('-'*70)
@@ -70,6 +70,14 @@ class DataSet(object):
             self.gridPointData = dataClass.gridPointData
             self.domainData = dataClass.domainData
             self.fileName = dataClass.fileName
+        elif pickleData:
+            self.blockData = pickleData[0]
+            self.contactData = pickleData[1]
+            self.cornerData = pickleData[2]
+            self.zoneData = pickleData[3]
+            self.gridPointData = pickleData[4]
+            self.domainData = pickleData[5]
+            self.fileName = 'test'
         print('')
 
     def parseDataFile(self, fileName):
@@ -216,8 +224,8 @@ class DataSet(object):
         return S12
  
 class Homogenize(DataSet):
-    def __init__(self, centre, radius, dataClass=None, fileName=None):
-        DataSet.__init__(self, dataClass=dataClass, fileName=fileName)
+    def __init__(self, centre, radius, dataClass=None, pickleData=None, fileName=None):
+        DataSet.__init__(self, dataClass=dataClass, pickleData=pickleData, fileName=fileName)
         
         self.centre = centre
         self.radius = radius
@@ -571,7 +579,6 @@ class Homogenize(DataSet):
         return t
         
 class common:
-
     def triangleArea(gp):
         distance = lambda p1,p2: math.hypot(p1[0]-p2[0], p1[1]-p2[1])
         side_a = distance(gp[0], gp[1])
@@ -582,12 +589,12 @@ class common:
         
     def listIntersection(a, b):
         return list(set(a) & set(b))
-        
-    def area(p):
-        return 0.5 * abs(sum(x0*y1 - x1*y0 for ((x0, y0), (x1, y1)) in segments(p)))
 
     def segments(p):
         return zip(p, p[1:] + [p[0]])
+        
+    def area(p):
+        return 0.5 * abs(sum(x0*y1 - x1*y0 for ((x0, y0), (x1, y1)) in common.segments(p)))
 
     def angle(x1, y1, x2, y2):
         inner_product = x1*x2 + y1*y2

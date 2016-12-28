@@ -4,13 +4,14 @@ import pickle
 
 
 class ModuleBaseClass(object):
-    def __init__(self, program, parameters = {}, suppressText = False, suppressErrors = True):
+    def __init__(self, program, baseName, parameters = {}, suppressText = False, suppressErrors = True):
         self.program = program
         self.parameters = parameters
         
         self.suppressText = suppressText
         self.suppressErrors = suppressErrors
         
+        self.baseName = baseName
         topDirectory = os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
         dataDirectory =  os.path.join(topDirectory, 'Data')
         self.binaryDirectory = os.path.join(dataDirectory, 'Binary')
@@ -43,11 +44,12 @@ class ModuleBaseClass(object):
             self.printText(error)
             
     def saveData(self, data):
-        with open(self.outputFileName()) as file:
+        with open(self.outputFileName(), 'wb') as file:
             pickle.dump(file, data)
         
     def loadData(self):
-        with open(self.inputFileName()) as file:
+        with open(self.inputFileName(), 'rb') as file:
+            print(self.inputFileName())
             return pickle.load(file)
         
     def updateParameters(self, parameters):
@@ -81,19 +83,20 @@ class ModuleBaseClass(object):
         pass
 
 class DemModuleBaseClass(ModuleBaseClass):
-    def __init__(self, program, parameters):
-        ModuleBaseClass.__init__(program, parameters)
+    def __init__(self, program, parameters, baseName):
+        ModuleBaseClass.__init__(self, program, baseName, parameters)
+        self.type = 'DEM'
              
     def inputFileName(self, data):
-        pass
+        return os.path.join(self.textDirectory, 'voronoiGranite(0.0)')
             
     def outputFileName(self, data): 
         pass
         
 
 class ParameterEstimationModuleBaseClass(ModuleBaseClass):
-    def __init__(self, program, parameters):
-        ModuleBaseClass.__init__(program, parameters)
+    def __init__(self, program, parameters, baseName):
+        ModuleBaseClass.__init__(self, program, baseName, parameters)
         
             
     def inputFileName(self, data):
@@ -103,9 +106,8 @@ class ParameterEstimationModuleBaseClass(ModuleBaseClass):
         pass
 
 class ContinuumModuleBaseClass(ModuleBaseClass):
-    def __init__(self, program, parameters):
-        ModuleBaseClass.__init__(program, parameters)
-        
+    def __init__(self, program, parameters, baseName):
+        ModuleBaseClass.__init__(self, program, baseName, parameters)
             
     def inputFileName(self, data):
         pass
@@ -114,15 +116,16 @@ class ContinuumModuleBaseClass(ModuleBaseClass):
         pass
 
 class HomogenizationModuleBaseClass(ModuleBaseClass):
-    def __init__(self, program, parameters):
-        ModuleBaseClass.__init__(self, program, parameters)
+    def __init__(self, program, parameters, baseName):
+        ModuleBaseClass.__init__(self, program, baseName, parameters)
         self.type = 'Homogenization'
+        
             
     def inputFileName(self):
-        return os.path.join(self.binaryDirectory, 'voronoiGranite(0.0)_DEM.pkl')
+        return os.path.join(self.binaryDirectory, '{0}{1}'.format(self.baseName, '_DEM.pkl'))
             
     def outputFileName(self):       
-        return os.path.join(self.binaryDirectory, 'testOut.pkl')
+        return os.path.join(self.binaryDirectory, '{0}{1}'.format(self.baseName, '_HOM.pkl'))
 
 
     
