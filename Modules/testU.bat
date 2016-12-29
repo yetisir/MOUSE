@@ -1,1 +1,1 @@
-python HODS_Module.py -n voronoiGranite -x 0 -y 0 -r 4
+python Module_HODS.py -n voronoiGranite -x 0 -y 0 -r 4

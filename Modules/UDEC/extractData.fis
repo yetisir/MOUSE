@@ -1,0 +1,356 @@
+;import parameter offsets
+call 'C:\Program Files (x86)\Itasca\UDEC500\Datafiles\Fish\FIN\CONTACT.FIN'
+call 'C:\Program Files (x86)\Itasca\UDEC500\Datafiles\Fish\FIN\DOMAIN.FIN'
+call 'C:\Program Files (x86)\Itasca\UDEC500\Datafiles\Fish\FIN\BLOCK.FIN'
+
+def setup
+	;**************************************************************************
+	;Function to initialize the numContacts and numBlocks variables. In order 
+	;to define an array size with a variable, the variable cannot be defined 
+	;within the same function. As such, this function serves the purpose of 
+	;facilitating the construction of an array with a length equal to the 
+	;number of contacts.
+	;**************************************************************************
+	
+	;Loop through all contacts and count each one
+	ci = contact_head
+	numContacts = 0
+	loop while ci # 0
+		numContacts = numContacts + 1
+		ci = c_next(ci)
+	endloop
+	
+	di = domain_head
+	numDomains = 0
+	loop while di # 0
+		numDomains = numDomains + 1
+		di = d_next(di)
+	endloop
+	
+	bi = block_head
+	numBlocks = 0
+	numCorners = 0
+	numZones = 0
+	numGridPoints = 0
+	loop while bi # 0
+		cri = imem(bi+$KP)
+		ti = cri
+		numCorners = numCorners + 1
+		cri = imem(cri+$KR)
+		loop while cri # ti
+			numCorners = numCorners + 1
+			cri = imem(cri+$KR)
+		endloop
+		
+		zi = b_zone(bi)
+		loop while zi # 0
+			numZones = numZones + 1
+			zi = z_next(zi)
+		endloop
+		
+		gi = b_gp(bi)
+		loop while gi # 0
+			numGridPoints = numGridPoints + 1
+			gi = gp_next(gi)
+		endloop
+		
+		numBlocks = numBlocks + 1
+		bi = b_next(bi)
+	endloop
+
+	;--------------------------------------------------------------------------
+	;Data Recording Variables - Change as required
+	modelName = 'excavationSimulation'
+	simulationTime = 0.0	;**important: make sure value is specified as float
+	numberOfSteps = 1
+	;--------------------------------------------------------------------------
+	fName = 'savFiles\'+modelName+'.sav'
+	command
+		save fName
+	endCommand
+	
+	numContactArray = (numContacts)*(numberOfSteps*2)+2
+	numBlockArray = (numBlocks)*(numberOfSteps)+2
+	numCornerArray = (numCorners)*(numberOfSteps)+2
+	numGridPointArray = (numGridPoints)*(numberOfSteps)+2
+	numZoneArray = (numZones)*(numberOfSteps)+2
+	numDomainArray = (numDomains)*(numberOfSteps*2)+2
+end
+setup
+
+
+def cycleModel
+	;**************************************************************************
+	;Function to collect contact data for each contact and block and write to 
+	;file at specified intervals during cycling. The contact and block data is 
+	;written to a separate file for each time step.
+	;**************************************************************************
+
+	;Define contact and block file headers
+	contactHeader = 'time cIndex x y length flowRate aperture nForce sForce '
+	contactHeader = contactHeader + 'xNormCosine yNormCosine blocks domains '
+	contactHeader = contactHeader + 'corners'
+	
+	blockHeader = 'time bIndex x y area xForce yForce'
+	blockHeader = blockHeader + ' corners zones gridPoints'
+		
+	cornerHeader = 'time crIndex gridPoint'
+	
+	gridPointHeader = 'time gpIndex x y xDisp yDisp xForce yForce xVel yVel '
+	gridPointHeader = gridPointHeader+'block corner'
+	
+	zoneHeader = 'time zIndex S11 S22 S12 S33 block gridPoints'
+	
+	domainHeader = 'time dIndex x y area porePressure'
+	
+	contactTypes = 'f i f f f f f f f f f l l l'
+	blockTypes = 'f i f f f f f l l l l'
+	cornerTypes = 'f i i'
+	gridPointTypes = 'f i f f f f f f f f i i'
+	zoneTypes = 'f i f f f f i l'
+	domainTypes = 'f i f f f f'
+
+	;Initialize data arrays and insert headers
+	array contactData (numContactArray)
+	contactData(1) = contactHeader
+	contactData(2) = contactTypes
+	
+	array blockData (numBlockArray)
+	blockData(1) = blockHeader
+	blockData(2) = blockTypes
+	
+	array cornerData (numCornerArray)
+	cornerData(1) = cornerHeader
+	cornerData(2) = cornerTypes
+	
+	array gridPointData (numGridPointArray)
+	gridPointData(1) = gridPointHeader
+	gridPointData(2) = gridPointTypes
+	
+	array zoneData (numzoneArray)
+	zoneData(1) = zoneHeader
+	zoneData(2) = zoneTypes
+	
+	array domainData (numDomainArray)
+	domainData(1) = domainHeader
+	domainData(2) = domainTypes
+	
+	;Loop for the specified number of time steps
+	timeStep = simulationTime/numberOfSteps
+	totalTime = 0.0
+	cCounter = 3
+	bCounter = 3
+	crCounter = 3
+	gpCounter = 3
+	zCounter = 3
+	dCounter = 3
+	loop z (1, numberOfSteps)
+		;Cycle the model for the duration of each time step
+		totalTime = totalTime + timeStep
+		command
+			;cycle time timeStep
+			print totalTime
+		endcommand
+
+
+		tt = string(totalTime)
+		
+		;Loop through all the contacts and extract the specified data.
+		ci = contact_head
+		loop while ci # 0
+
+			;Extracting desired contact parameters
+			cIndex = string(ci)	
+			cLength = string(fmem(ci+$KCL))
+			flowRate = string(fmem(ci+$KCQ))
+			aperture = string(fmem(ci+$KCAP))
+			xCoord = string(fmem(ci+$KXC))		;xCoordinate
+			yCoord = string(fmem(ci+$KYC))		;yCoordinate
+			nForce = string(fmem(ci+$KCFN))		;normal force (compression +)
+			sForce = string(fmem(ci+$KCFS))		;shear force
+			xNormCosine = string(fmem(ci+$KCNX));contact normal x cosine
+			yNormCosine = string(fmem(ci+$KCNY));contact normal y cosine
+			contactBlocks = string(imem(ci+$KB1))+','+string(imem(ci+$KB2))
+			contactDomains = string(imem(ci+$KD1))+','+string(imem(ci+$KD2))
+			contactCorners = string(imem(ci+$KC1A))+','+string(imem(ci+$KC2A))
+			;Combine all desired parameters into a single space
+			;delimited record
+			newRecord = tt+' '+cIndex+' '+xCoord+' '+yCoord+' '+cLength+' '+flowRate+' '
+			newRecord = newRecord+aperture+' '+nForce+' '+sForce+' '+xNormCosine+' '
+			newRecord = newRecord+yNormCosine+' '+contactBlocks+' '+contactDomains+' '
+			newRecord = newRecord+contactCorners
+
+			;Add record to data array
+			contactData(cCounter) = newRecord
+			
+			;Find next contact
+			ci = c_next(ci)
+			cCounter = cCounter + 1
+		endloop
+
+		di = domain_head
+		loop while di # 0
+			;Extracting desired contact parameters
+			dIndex = string(di)	
+			xCoord = string(fmem(di+$KDX))		;xCoordinate
+			yCoord = string(fmem(di+$KDX))		;yCoordinate
+			dArea = string(fmem(di+$KCFN))		
+			porePressure = string(fmem(di+$KCFS))
+
+			;Combine all desired parameters into a single space
+			;delimited record
+			newRecord = tt+' '+dIndex+' '+xCoord+' '+yCoord+' '+dArea+' '
+			newRecord = newRecord+porePressure
+
+			;Add record to data array
+			domainData(dCounter) = newRecord
+			
+			;Find next contact
+			di = d_next(di)
+			dCounter = dCounter + 1
+		endloop
+
+		;Loop through all the blocks and extract the specified data.
+		bi = block_head
+		loop while bi # 0
+
+			;Extracting desired contact parameters
+			bIndex = string(bi)	
+			bArea = string(fmem(bi+$KAREA))		;block area
+			xCentForce = string(fmem(bi+$KBFX))	;x-centroid force sum
+			yCentForce = string(fmem(bi+$KBFY))	;y-centroid force sum
+			xCent = string(fmem(bi+$KX))		;x coordinate of centroid
+			yCent = string(fmem(bi+$KY))		;y coordinate of centroid
+				
+			;Determining the contact forces for all block contacts.
+			cri = imem(bi+$KP)
+			ti = 0
+			corners = ''
+			
+			
+			firstCorner = 1
+			loop while cri # ti
+				if firstCorner = 1
+					ti = cri
+					firstCorner = 0
+					corners = string(cri)
+				else
+					corners = corners + ',' + string(cri)
+				endif
+				crIndex = string(cri)		
+				gpIndex = string(imem(cri+$KGP))
+
+				
+				newRecord = tt+' '+crIndex+' '+gpIndex
+				cornerData(crCounter) = newRecord
+				
+				cri = imem(cri+$KR)
+				crCounter = crCounter + 1
+			endloop
+			
+			gi = b_gp(bi)
+			gridPointList = string(gi)
+			firstLoop = 1
+			loop while gi # 0
+				gpIndex = string(gi)
+				if firstLoop # 1
+					gridPointList = gridPointList+','+gpIndex
+				endif
+				
+				xCoord = string(fmem(gi+$KXG))
+				yCoord = string(fmem(gi+$KYG))
+				
+				gpCorner = string(imem(cri+$KCOR))
+				xDisplace = string(fmem(gi+$KGUX))
+				yDisplace = string(fmem(gi+$KGUY))
+				
+				xGridForce = string(fmem(gi+$KGFX))
+				yGridForce = string(fmem(gi+$KGFY))
+				
+				newRecord = tt+' '+gpIndex+' '+xCoord+' '+yCoord+' '+xDisplace
+				newRecord = newRecord+' '+yDisplace+' '+xGridForce+' '+yGridForce
+				newRecord = newRecord+bIndex+' '+gpCorner
+				
+				gridPointData(gpCounter) = newRecord
+				gi = gp_next(gi)
+				gpCounter = gpCounter + 1
+				firstLoop = 0
+			endloop
+			
+			zi = b_zone(bi)
+			zoneList = string(zi)
+			firstLoop = 1
+			loop while zi # 0
+				zIndex = string(zi)
+				if firstLoop # 1
+					zoneList = zoneList+','+zIndex
+				endif
+				
+				zGridPoints = string(z_gp(zi, 1))+','+string(z_gp(zi, 2))+','
+				zGridPoints = zGridPoints+string(z_gp(zi, 3))
+				S11 = string(fmem(zi+$KZS11))
+				S22 = string(fmem(zi+$KZS22))
+				S12 = string(fmem(zi+$KZS12))
+				S33 = string(fmem(zi+$KZS33))
+				newRecord = tt+' '+zIndex+' '+S11+' '+S22+' '+S12+' '+S33+' '
+				newRecord = newRecord+bIndex+' '+zGridPoints
+				
+				zoneData(zCounter) = newRecord
+				zi = z_next(zi)
+				zCounter = zCounter+1
+				firstLoop = 0
+			endloop
+
+
+			newRecord = tt+' '+bIndex+' '+xCent+' '+yCent+' '+bArea+' '
+			newRecord = newRecord+xCentForce+' '+yCentForce+' '
+			newRecord = newRecord+corners+' '+zoneList+' '+gridPointList
+			
+			;Add record to data array
+			blockData(bCounter) = newRecord
+			
+			;Find next contact
+			bi = b_next(bi)
+			bCounter = bCounter + 1
+		endloop
+		
+	endloop
+	
+	cCounter = cCounter - 1
+	dCounter = dCounter - 1
+
+	;Write data array to file
+	fName = 'data\'+modelName+'___contact.dat'
+	status = open(fName, 1, 1)
+	status = write(contactData, cCounter)
+	status = close
+
+	fName = 'data\'+modelName+'___block.dat'
+	status = open(fName, 1, 1)
+	status = write(blockData, numBlockArray)
+	status = close
+
+	fName = 'data\'+modelName+'___corner.dat'
+	status = open(fName, 1, 1)
+	status = write(cornerData, numCornerArray)
+	status = close
+	
+	fName = 'data\'+modelName+'___gridPoint.dat'
+	status = open(fName, 1, 1)
+	status = write(gridPointData, numGridPointArray)
+	status = close
+	
+	fName = 'data\'+modelName+'___zone.dat'
+	status = open(fName, 1, 1)
+	status = write(zoneData, numZoneArray)
+	status = close
+	
+	fName = 'data\'+modelName+'___domain.dat'
+	status = open(fName, 1, 1)
+	status = write(domainData, dCounter)
+	status = close
+	
+
+end
+
+cycleModel

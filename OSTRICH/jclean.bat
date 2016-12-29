@@ -1,0 +1,2 @@
+@ECHO OFF
+DEL Job* >NUL 2>NUL

@@ -7,8 +7,88 @@ import psutil
 import importlib
 import argparse
 
+def main():
+    
+    pass 
+    
+def importModelData(modelName):
+    global modelData
+    modelData = importlib.import_module('Data.Model.'+modelName)
+    
+def run(modelName, radius=10):
+    importModelData(modelName)
+    main(radius)
+    
+#TODO: move handlers to module files
+ 
+def udecHandler(args):
+    if res.unity_deploy:
+        print('Unity deploy')
 
-def main(radius, identity=None, optimizer='ParticleSwarm'):
+    if res.unity_tagcheck:
+        print('Unity tagcheck')
+        
+def hodsHandler(args):      
+    def main(revCentreX=None, revCentreY=None, revRadius=None):
+    os.system('cls')
+
+    if revCentreX == None:
+        revCentreX = modelData.modelSize/2
+    if revCentreY == None:
+        revCentreY = modelData.modelSize/2
+    if revRadius == None:
+        revRadius = modelData.modelSize/2-modelData.blockSize*2
+    revCentre = {'x':revCentreX, 'y':revCentreY}
+
+    from Modules import Module_HODS  
+    for j in range(len(modelData.confiningStress)):
+        fileName = '{0}({1}.{2})'.format(args.name, 0, j)
+        M = ModuleHODS.Module_HODS(fileName)
+        # stressHistory = H.stress()
+        # strainHistory = H.strain()
+        # timeHistory = H.time()
+        
+        # writeToFile(timeHistory, stressHistory, strainHistory, j, i, interpolate=interpolate)
+        # print (' ')
+            
+    # main()           
+def ostrichHandler(args):
+    if res.clc_deploy:
+        print('Clc deploy')
+        
+        
+    
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='MOUSE: An Up-Scaling Utility for DEM Simulations')
+    #parser.add_argument('-n', '--name', required=True ,help='Name of the file containing the model data without the extension')
+
+    subparsers = parser.add_subparsers()
+    
+    #TODO: import subparsers form module files
+    
+    udecParser = subparsers.add_parser('UDEC')
+    udecParser.set_defaults(func=udecHandler)
+    
+    hodsParser = subparsers.add_parser('HODS')
+    
+    from Modules import Module_HODS    
+    hodsParser = Module_HODS.populateArgumentParser(hodsParser)
+    #hodsParser.set_defaults(func=hodsHandler)
+    
+    ostrichParser = subparsers.add_parser('OSTRICH')
+    ostrichParser.add_argument('-id', '--identity', help='identification Number')
+    ostrichParser.add_argument('-o', '--optimizer', default='ParticleSwarm', help='optimization algorithm')
+    
+    args = parser.parse_args()
+    args.func(args)
+
+
+    
+
+    
+    
+
+def main(radius, optimizer='ParticleSwarm'): #identity=None, 
     """
     docstgring
     """
@@ -96,31 +176,3 @@ def main(radius, identity=None, optimizer='ParticleSwarm'):
     os.chdir(os.path.join(os.getcwd(), 'OSTRICH'))
     os.system('cleanup.bat')
     os.chdir(os.pardir)
-    
-def importModelData(modelName):
-    global modelData
-    modelData = importlib.import_module('UDEC.modelData.'+modelName)
-    
-    
-def run(modelName, radius=10):
-    importModelData(modelName)
-    main(radius)
-    
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='UpFrac: An Up-Scaling Utility for DEM Simulations')
-    parser.add_argument('-n', '--name', required=True ,help='Name of the file containing the model data without the extension')
-    parser.add_argument('-r', '--radius', help='REV radius')
-    parser.add_argument('-id', '--identity', help='identification Number')
-    parser.add_argument('-o', '--optimizer', default='ParticleSwarm', help='optimization algorithm')
-
-
-    args = parser.parse_args()
-    modelName = args.name
-    radius = args.radius
-    identity = args.identity
-    optimizer = args.optimizer
-    
-    importModelData(modelName)
-    #TODO:maybe just pass args instead?
-    #main(identity, optimizer)
-    main(radius, identity, optimizer)

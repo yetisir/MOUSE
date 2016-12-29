@@ -1,0 +1,295 @@
+#Configuration File for Ostrich Program
+
+ProgramType APPSO
+
+BeginFilePairs    
+runAbaqus.temp.tpl	runAbaqus.py
+EndFilePairs
+
+ModelExecutable    simulationData.bat
+
+ModelSubdir model
+
+BeginParams
+#parameter	init.	low	    high	tx_in   tx_ost	tx_out
+$yeildStrain1	1.2e-05	5e-06	0.0001	none	none	none
+$frictionAngle	55	30	60	none	none	none
+$poissonsRatio	0.2	0.15	0.45	none	none	none
+$initialCompressiveYeild	31000.0	1000.0	100000.0	none	none	none
+$peakCompressiveYeildDiff	1500000.0	500000.0	5000000.0	none	none	none
+$yeildStrain2	0.214	0.01	1.0	none	none	none
+$dilationAngle	10	5	50	none	none	none
+$failureDisplacement	0.8	0	2	none	none	none
+$flowStressRatio	0.86	0.78	1	none	none	none
+$peakPlasticStrain	0.013	0.005	0.05	none	none	none
+$elasticModulus	1700000000.0	1000000000.0	10000000000.0	none	none	none
+
+EndParams
+
+BeginObservations
+#observation	value		weight	file		keyword		line	column
+obs1 		-249946.087866 	1.0 	output.dat 	OST_NULL 	1 		3
+obs2 		-2054463.018702 	1.0 	output.dat 	OST_NULL 	2 		3
+obs3 		-3285296.477186 	1.0 	output.dat 	OST_NULL 	3 		3
+obs4 		-4154866.718108 	1.0 	output.dat 	OST_NULL 	4 		3
+obs5 		-4790276.319938 	1.0 	output.dat 	OST_NULL 	5 		3
+obs6 		-5268837.178126 	1.0 	output.dat 	OST_NULL 	6 		3
+obs7 		-5649759.581619 	1.0 	output.dat 	OST_NULL 	7 		3
+obs8 		-5966763.620254 	1.0 	output.dat 	OST_NULL 	8 		3
+obs9 		-6208585.494959 	1.0 	output.dat 	OST_NULL 	9 		3
+obs10 		-6365610.358620 	1.0 	output.dat 	OST_NULL 	10 		3
+obs11 		-6396603.950000 	1.0 	output.dat 	OST_NULL 	11 		3
+obs12 		-6467197.344096 	1.0 	output.dat 	OST_NULL 	12 		3
+obs13 		-6591672.391565 	1.0 	output.dat 	OST_NULL 	13 		3
+obs14 		-6611050.344436 	1.0 	output.dat 	OST_NULL 	14 		3
+obs15 		-6475847.904037 	1.0 	output.dat 	OST_NULL 	15 		3
+obs16 		-6331479.631996 	1.0 	output.dat 	OST_NULL 	16 		3
+obs17 		-5988371.636577 	1.0 	output.dat 	OST_NULL 	17 		3
+obs18 		-5076752.120605 	1.0 	output.dat 	OST_NULL 	18 		3
+obs19 		-5033635.913789 	1.0 	output.dat 	OST_NULL 	19 		3
+obs20 		-5001961.592575 	1.0 	output.dat 	OST_NULL 	20 		3
+obs21 		-4983545.039876 	1.0 	output.dat 	OST_NULL 	21 		3
+obs22 		-5062146.253927 	1.0 	output.dat 	OST_NULL 	22 		3
+obs23 		-5012812.762366 	1.0 	output.dat 	OST_NULL 	23 		3
+obs24 		-5038288.281001 	1.0 	output.dat 	OST_NULL 	24 		3
+obs25 		-5036506.065687 	1.0 	output.dat 	OST_NULL 	25 		3
+obs26 		-5017894.809367 	1.0 	output.dat 	OST_NULL 	26 		3
+obs27 		-4984413.460667 	1.0 	output.dat 	OST_NULL 	27 		3
+obs28 		-4937948.704801 	1.0 	output.dat 	OST_NULL 	28 		3
+obs29 		-4725284.974328 	1.0 	output.dat 	OST_NULL 	29 		3
+obs30 		-4414407.220252 	1.0 	output.dat 	OST_NULL 	30 		3
+obs31 		-4316475.781823 	1.0 	output.dat 	OST_NULL 	31 		3
+obs32 		-4206603.943895 	1.0 	output.dat 	OST_NULL 	32 		3
+obs33 		-4078992.749285 	1.0 	output.dat 	OST_NULL 	33 		3
+obs34 		-4119324.680936 	1.0 	output.dat 	OST_NULL 	34 		3
+obs35 		-4091870.877252 	1.0 	output.dat 	OST_NULL 	35 		3
+obs36 		-3946668.456961 	1.0 	output.dat 	OST_NULL 	36 		3
+obs37 		-3651526.695269 	1.0 	output.dat 	OST_NULL 	37 		3
+obs38 		-3571283.736025 	1.0 	output.dat 	OST_NULL 	38 		3
+obs39 		-3548559.156685 	1.0 	output.dat 	OST_NULL 	39 		3
+obs40 		-3537517.533473 	1.0 	output.dat 	OST_NULL 	40 		3
+obs41 		-3515900.377751 	1.0 	output.dat 	OST_NULL 	41 		3
+obs42 		-3374084.298787 	1.0 	output.dat 	OST_NULL 	42 		3
+obs43 		-3253995.499978 	1.0 	output.dat 	OST_NULL 	43 		3
+obs44 		-3147491.174642 	1.0 	output.dat 	OST_NULL 	44 		3
+obs45 		-3098407.892097 	1.0 	output.dat 	OST_NULL 	45 		3
+obs46 		-3045622.577178 	1.0 	output.dat 	OST_NULL 	46 		3
+obs47 		-2981312.971351 	1.0 	output.dat 	OST_NULL 	47 		3
+obs48 		-2857754.573044 	1.0 	output.dat 	OST_NULL 	48 		3
+obs49 		-2858215.861964 	1.0 	output.dat 	OST_NULL 	49 		3
+obs50 		-2866767.368631 	1.0 	output.dat 	OST_NULL 	50 		3
+obs51 		-2800031.862808 	1.0 	output.dat 	OST_NULL 	51 		3
+obs52 		-500012.451000 	1.0 	output.dat 	OST_NULL 	52 		3
+obs53 		-2454923.185447 	1.0 	output.dat 	OST_NULL 	53 		3
+obs54 		-4081924.784964 	1.0 	output.dat 	OST_NULL 	54 		3
+obs55 		-5390728.705427 	1.0 	output.dat 	OST_NULL 	55 		3
+obs56 		-6447261.966128 	1.0 	output.dat 	OST_NULL 	56 		3
+obs57 		-7347564.831689 	1.0 	output.dat 	OST_NULL 	57 		3
+obs58 		-8091226.616717 	1.0 	output.dat 	OST_NULL 	58 		3
+obs59 		-8714622.548377 	1.0 	output.dat 	OST_NULL 	59 		3
+obs60 		-9259166.711147 	1.0 	output.dat 	OST_NULL 	60 		3
+obs61 		-9732839.947632 	1.0 	output.dat 	OST_NULL 	61 		3
+obs62 		-10133041.476140 	1.0 	output.dat 	OST_NULL 	62 		3
+obs63 		-10489464.109935 	1.0 	output.dat 	OST_NULL 	63 		3
+obs64 		-10809083.269137 	1.0 	output.dat 	OST_NULL 	64 		3
+obs65 		-11044500.422965 	1.0 	output.dat 	OST_NULL 	65 		3
+obs66 		-11313811.619665 	1.0 	output.dat 	OST_NULL 	66 		3
+obs67 		-11640415.330602 	1.0 	output.dat 	OST_NULL 	67 		3
+obs68 		-11736465.872090 	1.0 	output.dat 	OST_NULL 	68 		3
+obs69 		-11667790.424416 	1.0 	output.dat 	OST_NULL 	69 		3
+obs70 		-11556959.703652 	1.0 	output.dat 	OST_NULL 	70 		3
+obs71 		-11386881.852335 	1.0 	output.dat 	OST_NULL 	71 		3
+obs72 		-11170876.180664 	1.0 	output.dat 	OST_NULL 	72 		3
+obs73 		-10943340.608260 	1.0 	output.dat 	OST_NULL 	73 		3
+obs74 		-10970490.182061 	1.0 	output.dat 	OST_NULL 	74 		3
+obs75 		-9709299.041173 	1.0 	output.dat 	OST_NULL 	75 		3
+obs76 		-9935327.668193 	1.0 	output.dat 	OST_NULL 	76 		3
+obs77 		-9966468.368269 	1.0 	output.dat 	OST_NULL 	77 		3
+obs78 		-10025957.959037 	1.0 	output.dat 	OST_NULL 	78 		3
+obs79 		-10079866.183025 	1.0 	output.dat 	OST_NULL 	79 		3
+obs80 		-10115806.726078 	1.0 	output.dat 	OST_NULL 	80 		3
+obs81 		-10092768.270029 	1.0 	output.dat 	OST_NULL 	81 		3
+obs82 		-9942694.261969 	1.0 	output.dat 	OST_NULL 	82 		3
+obs83 		-9675537.523043 	1.0 	output.dat 	OST_NULL 	83 		3
+obs84 		-9266536.658486 	1.0 	output.dat 	OST_NULL 	84 		3
+obs85 		-9043547.084885 	1.0 	output.dat 	OST_NULL 	85 		3
+obs86 		-8654066.506881 	1.0 	output.dat 	OST_NULL 	86 		3
+obs87 		-7677476.116818 	1.0 	output.dat 	OST_NULL 	87 		3
+obs88 		-7685308.435844 	1.0 	output.dat 	OST_NULL 	88 		3
+obs89 		-7598326.592470 	1.0 	output.dat 	OST_NULL 	89 		3
+obs90 		-7311120.912080 	1.0 	output.dat 	OST_NULL 	90 		3
+obs91 		-7178776.477139 	1.0 	output.dat 	OST_NULL 	91 		3
+obs92 		-6914455.208524 	1.0 	output.dat 	OST_NULL 	92 		3
+obs93 		-6744053.840984 	1.0 	output.dat 	OST_NULL 	93 		3
+obs94 		-6529952.072020 	1.0 	output.dat 	OST_NULL 	94 		3
+obs95 		-6501153.014916 	1.0 	output.dat 	OST_NULL 	95 		3
+obs96 		-6332751.207903 	1.0 	output.dat 	OST_NULL 	96 		3
+obs97 		-6226980.161585 	1.0 	output.dat 	OST_NULL 	97 		3
+obs98 		-6018010.864037 	1.0 	output.dat 	OST_NULL 	98 		3
+obs99 		-6174191.617610 	1.0 	output.dat 	OST_NULL 	99 		3
+obs100 		-6799433.364944 	1.0 	output.dat 	OST_NULL 	100 		3
+obs101 		-5331889.194060 	1.0 	output.dat 	OST_NULL 	101 		3
+obs102 		-5462646.209068 	1.0 	output.dat 	OST_NULL 	102 		3
+obs103 		-1000969.973490 	1.0 	output.dat 	OST_NULL 	103 		3
+obs104 		-2984288.293417 	1.0 	output.dat 	OST_NULL 	104 		3
+obs105 		-4905452.638766 	1.0 	output.dat 	OST_NULL 	105 		3
+obs106 		-6605691.294382 	1.0 	output.dat 	OST_NULL 	106 		3
+obs107 		-8120729.457619 	1.0 	output.dat 	OST_NULL 	107 		3
+obs108 		-9468503.538351 	1.0 	output.dat 	OST_NULL 	108 		3
+obs109 		-10678237.877250 	1.0 	output.dat 	OST_NULL 	109 		3
+obs110 		-11760969.440197 	1.0 	output.dat 	OST_NULL 	110 		3
+obs111 		-12733779.010757 	1.0 	output.dat 	OST_NULL 	111 		3
+obs112 		-13630945.779113 	1.0 	output.dat 	OST_NULL 	112 		3
+obs113 		-14431407.034385 	1.0 	output.dat 	OST_NULL 	113 		3
+obs114 		-15166743.188392 	1.0 	output.dat 	OST_NULL 	114 		3
+obs115 		-15813199.014600 	1.0 	output.dat 	OST_NULL 	115 		3
+obs116 		-16405282.561446 	1.0 	output.dat 	OST_NULL 	116 		3
+obs117 		-16954153.120683 	1.0 	output.dat 	OST_NULL 	117 		3
+obs118 		-17455087.316530 	1.0 	output.dat 	OST_NULL 	118 		3
+obs119 		-17913241.041081 	1.0 	output.dat 	OST_NULL 	119 		3
+obs120 		-18295783.793533 	1.0 	output.dat 	OST_NULL 	120 		3
+obs121 		-18761519.514456 	1.0 	output.dat 	OST_NULL 	121 		3
+obs122 		-19261618.192422 	1.0 	output.dat 	OST_NULL 	122 		3
+obs123 		-19740298.309704 	1.0 	output.dat 	OST_NULL 	123 		3
+obs124 		-20052647.104307 	1.0 	output.dat 	OST_NULL 	124 		3
+obs125 		-20350230.370607 	1.0 	output.dat 	OST_NULL 	125 		3
+obs126 		-20743695.082214 	1.0 	output.dat 	OST_NULL 	126 		3
+obs127 		-21043011.421827 	1.0 	output.dat 	OST_NULL 	127 		3
+obs128 		-21201777.852016 	1.0 	output.dat 	OST_NULL 	128 		3
+obs129 		-20949109.300574 	1.0 	output.dat 	OST_NULL 	129 		3
+obs130 		-21290881.560188 	1.0 	output.dat 	OST_NULL 	130 		3
+obs131 		-20339772.913184 	1.0 	output.dat 	OST_NULL 	131 		3
+obs132 		-20199957.597236 	1.0 	output.dat 	OST_NULL 	132 		3
+obs133 		-20062397.454046 	1.0 	output.dat 	OST_NULL 	133 		3
+obs134 		-20011809.426786 	1.0 	output.dat 	OST_NULL 	134 		3
+obs135 		-19901390.211962 	1.0 	output.dat 	OST_NULL 	135 		3
+obs136 		-18292080.871716 	1.0 	output.dat 	OST_NULL 	136 		3
+obs137 		-18699349.213333 	1.0 	output.dat 	OST_NULL 	137 		3
+obs138 		-18776524.546204 	1.0 	output.dat 	OST_NULL 	138 		3
+obs139 		-18611575.393606 	1.0 	output.dat 	OST_NULL 	139 		3
+obs140 		-18363414.141122 	1.0 	output.dat 	OST_NULL 	140 		3
+obs141 		-17959489.843897 	1.0 	output.dat 	OST_NULL 	141 		3
+obs142 		-15716412.334554 	1.0 	output.dat 	OST_NULL 	142 		3
+obs143 		-15362282.478184 	1.0 	output.dat 	OST_NULL 	143 		3
+obs144 		-14913736.336726 	1.0 	output.dat 	OST_NULL 	144 		3
+obs145 		-13668868.503086 	1.0 	output.dat 	OST_NULL 	145 		3
+obs146 		-13475306.400931 	1.0 	output.dat 	OST_NULL 	146 		3
+obs147 		-13385677.334153 	1.0 	output.dat 	OST_NULL 	147 		3
+obs148 		-13025877.668645 	1.0 	output.dat 	OST_NULL 	148 		3
+obs149 		-12826576.168994 	1.0 	output.dat 	OST_NULL 	149 		3
+obs150 		-12782141.384238 	1.0 	output.dat 	OST_NULL 	150 		3
+obs151 		-12720191.795798 	1.0 	output.dat 	OST_NULL 	151 		3
+obs152 		-12067210.751379 	1.0 	output.dat 	OST_NULL 	152 		3
+obs153 		-11908647.676610 	1.0 	output.dat 	OST_NULL 	153 		3
+obs154 		-2002327.361589 	1.0 	output.dat 	OST_NULL 	154 		3
+obs155 		-3973177.721458 	1.0 	output.dat 	OST_NULL 	155 		3
+obs156 		-5973160.680192 	1.0 	output.dat 	OST_NULL 	156 		3
+obs157 		-7939137.901619 	1.0 	output.dat 	OST_NULL 	157 		3
+obs158 		-9805734.874927 	1.0 	output.dat 	OST_NULL 	158 		3
+obs159 		-11547280.436138 	1.0 	output.dat 	OST_NULL 	159 		3
+obs160 		-13188294.031428 	1.0 	output.dat 	OST_NULL 	160 		3
+obs161 		-14734735.166437 	1.0 	output.dat 	OST_NULL 	161 		3
+obs162 		-16179631.816730 	1.0 	output.dat 	OST_NULL 	162 		3
+obs163 		-17554285.819255 	1.0 	output.dat 	OST_NULL 	163 		3
+obs164 		-18844746.687188 	1.0 	output.dat 	OST_NULL 	164 		3
+obs165 		-20062819.926498 	1.0 	output.dat 	OST_NULL 	165 		3
+obs166 		-21207333.175536 	1.0 	output.dat 	OST_NULL 	166 		3
+obs167 		-22280927.355786 	1.0 	output.dat 	OST_NULL 	167 		3
+obs168 		-23304416.910955 	1.0 	output.dat 	OST_NULL 	168 		3
+obs169 		-24234500.407486 	1.0 	output.dat 	OST_NULL 	169 		3
+obs170 		-25152482.516240 	1.0 	output.dat 	OST_NULL 	170 		3
+obs171 		-26011386.210209 	1.0 	output.dat 	OST_NULL 	171 		3
+obs172 		-26849140.617919 	1.0 	output.dat 	OST_NULL 	172 		3
+obs173 		-27601049.600657 	1.0 	output.dat 	OST_NULL 	173 		3
+obs174 		-28320400.682763 	1.0 	output.dat 	OST_NULL 	174 		3
+obs175 		-28929576.559461 	1.0 	output.dat 	OST_NULL 	175 		3
+obs176 		-29554574.584265 	1.0 	output.dat 	OST_NULL 	176 		3
+obs177 		-30160535.768765 	1.0 	output.dat 	OST_NULL 	177 		3
+obs178 		-30822298.088164 	1.0 	output.dat 	OST_NULL 	178 		3
+obs179 		-31559945.412474 	1.0 	output.dat 	OST_NULL 	179 		3
+obs180 		-32269863.320968 	1.0 	output.dat 	OST_NULL 	180 		3
+obs181 		-32963973.700302 	1.0 	output.dat 	OST_NULL 	181 		3
+obs182 		-33596454.964473 	1.0 	output.dat 	OST_NULL 	182 		3
+obs183 		-34235734.215658 	1.0 	output.dat 	OST_NULL 	183 		3
+obs184 		-34853580.025889 	1.0 	output.dat 	OST_NULL 	184 		3
+obs185 		-35429765.531798 	1.0 	output.dat 	OST_NULL 	185 		3
+obs186 		-35596467.289593 	1.0 	output.dat 	OST_NULL 	186 		3
+obs187 		-35900591.381959 	1.0 	output.dat 	OST_NULL 	187 		3
+obs188 		-36217539.098046 	1.0 	output.dat 	OST_NULL 	188 		3
+obs189 		-36775404.831860 	1.0 	output.dat 	OST_NULL 	189 		3
+obs190 		-36554146.948754 	1.0 	output.dat 	OST_NULL 	190 		3
+obs191 		-36741647.477553 	1.0 	output.dat 	OST_NULL 	191 		3
+obs192 		-37373237.059598 	1.0 	output.dat 	OST_NULL 	192 		3
+obs193 		-37137839.519618 	1.0 	output.dat 	OST_NULL 	193 		3
+obs194 		-36626061.161272 	1.0 	output.dat 	OST_NULL 	194 		3
+obs195 		-36471091.084998 	1.0 	output.dat 	OST_NULL 	195 		3
+obs196 		-36963889.184066 	1.0 	output.dat 	OST_NULL 	196 		3
+obs197 		-38061988.943650 	1.0 	output.dat 	OST_NULL 	197 		3
+obs198 		-33397023.554364 	1.0 	output.dat 	OST_NULL 	198 		3
+obs199 		-32677364.432842 	1.0 	output.dat 	OST_NULL 	199 		3
+obs200 		-30695148.401373 	1.0 	output.dat 	OST_NULL 	200 		3
+obs201 		-31004641.623405 	1.0 	output.dat 	OST_NULL 	201 		3
+obs202 		-31842251.432702 	1.0 	output.dat 	OST_NULL 	202 		3
+obs203 		-32354081.819735 	1.0 	output.dat 	OST_NULL 	203 		3
+obs204 		-32519369.717550 	1.0 	output.dat 	OST_NULL 	204 		3
+
+EndObservations
+
+BeginLevMar
+InitialLambda    10.0
+LambdaScaleFactor    1.1
+MoveLimit    0.1
+AlgorithmConvergenceValue    0.01
+LambdaPhiRatio    0.3
+LambdaRelReduction    0.01
+MaxLambdas    10
+MaxIterations    20
+EndLevMar
+
+BeginParticleSwarm
+SwarmSize  24
+NumGenerations  100
+ConstrictionFactor  1.00
+CognitiveParam  2.00
+SocialParam  2.00
+InertiaWeight  1.20
+InertiaReductionRate 0.1
+EndParticleSwarm
+
+BeginAPPSO
+SwarmSize  24
+NumGenerations  100
+ConstrictionFactor  1.00
+CognitiveParam  2.00
+SocialParam  2.00
+InertiaWeight  1.20
+InertiaReductionRate 0.1
+EndAPPSO
+
+BeginParallelDDSAlg
+PerturbationValue 0.2
+MaxIterations 1000
+UseRandomParamValues
+UseOpt standard
+EndParallelDDSAlg
+
+BeginDDSAlg
+PerturbationValue 0.2
+MaxIterations 1000
+UseRandomParamValues
+EndDDSAlg
+
+BeginMathAndStats
+Default
+Confidence
+Sensitivity
+EndMathAndStats
+
+BeginExtraFiles
+parameters.py
+interpolateData.py
+simulationData.py
+vectorMath.py
+jclean.bat
+EndExtraFiles
+

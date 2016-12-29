@@ -1,6 +1,8 @@
 # UpFrac Data Files
 Data/
-Modules/Module_UDEC/compiledData
+Modules/UDEC/compiledData
+OSTRICH/ostOutput
+Modules/UDEC/rawData
 
 
 # Byte-compiled / optimized / DLL files
