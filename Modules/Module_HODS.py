@@ -22,10 +22,45 @@ class Module_HODS (HomogenizationModuleBaseClass):
     def formatOutput(self):
         self.printText('Saving homogenization time history:')
         #fileName = '{0}({1}.{2})'.format(modelData.modelName, parameterizationRun, cStressIndex)
+        
+        with open(os.path.join(self.textDirectory, '{0}_HOM.txt'.format(self.baseName)), 'w') as file:
+            file.write('time S11 S22 S12 LE11 LE22 LE12\n')
+            #converting data correspond to an expected S22 strain step in order to compare against FEM better
+            S11History = [x[0,0] for x in self.stressHistory]
+            S22History = [x[1,1] for x in self.stressHistory]
+            S12History = [x[0,1] for x in self.stressHistory]
+            LE11History = [x[0,0] for x in self.strainHistory]
+            LE22History = [x[1,1] for x in self.strainHistory]
+            LE12History = [x[0,1] for x in self.strainHistory]
+
+
+            for i in range(len(self.stressHistory)):
+                LE11 = LE11History[i]                 
+                LE22 = LE22History[i]
+                LE12 = LE12History[i]
+                S11 = S11History[i]
+                S22 = S22History[i]
+                S12 = S12History[i]
+                self.stressHistory[i][0,0] = S11
+                self.stressHistory[i][1,1] = S22
+                self.stressHistory[i][1,0] = S12
+                self.stressHistory[i][0,1] = S12
+                self.strainHistory[i][0,0] = LE11
+                self.strainHistory[i][1,1] = LE22
+                self.strainHistory[i][1,0] = LE12
+                self.strainHistory[i][0,1] = LE12
+
+                time = self.timeHistory[i]
+                record = [time, S11, S22, S12, LE11, LE22, LE12]
+                record = ' '.join(map(str, record))
+                file.write(record + '\n')
+
+        bundle = [self.timeHistory, self.stressHistory, self.strainHistory]
+
         fileName = self.outputFileName()
         bundle = [self.timeHistory, self.stressHistory, self.strainHistory]
-        with open(self.outputFileName(), 'wb') as bundleFile:
-            pickle.dump(bundle, bundleFile)
+        self.saveData(bundle)
+        
         self.printText('\tDone')
             
     def setParameters(self, args):

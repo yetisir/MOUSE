@@ -1,6 +1,6 @@
 #Configuration File for Ostrich Program
 
-ProgramType APPSO
+ProgramType ParticleSwarm
 
 BeginFilePairs    
 runAbaqus.temp.tpl	runAbaqus.py
@@ -12,17 +12,19 @@ ModelSubdir model
 
 BeginParams
 #parameter	init.	low	    high	tx_in   tx_ost	tx_out
-$yeildStrain1	1.2e-05	5e-06	0.0001	none	none	none
-$frictionAngle	55	30	60	none	none	none
-$poissonsRatio	0.2	0.15	0.45	none	none	none
-$initialCompressiveYeild	31000.0	1000.0	100000.0	none	none	none
 $peakCompressiveYeildDiff	1500000.0	500000.0	5000000.0	none	none	none
-$yeildStrain2	0.214	0.01	1.0	none	none	none
-$dilationAngle	10	5	50	none	none	none
-$failureDisplacement	0.8	0	2	none	none	none
-$flowStressRatio	0.86	0.78	1	none	none	none
-$peakPlasticStrain	0.013	0.005	0.05	none	none	none
-$elasticModulus	1700000000.0	1000000000.0	10000000000.0	none	none	none
+$poissonsRatio	0.2	0.15	0.45	none	none	none
+$tensileDamageScaling	0.8	0.4	0.95	none	none	none
+$tLambda	220	50	500	none	none	none
+$initialCompressiveYeild	50000.0	1000.0	100000.0	none	none	none
+$initialTensileYeild	100000.0	50000.0	500000.0	none	none	none
+$equibiaxialRatio	1.16	1.05	1.3	none	none	none
+$dilationAngle	10	5	15	none	none	none
+$compressiveDamageScaling	0.8	0.4	0.95	none	none	none
+$elasticModulus	5000000000.0	1000000000.0	20000000000.0	none	none	none
+$invariantRatio	0.67	0.51	1	none	none	none
+$eccentricity	0.1	0.01	0.5	none	none	none
+$peakPlasticStrain	0.015	0.005	0.05	none	none	none
 
 EndParams
 
@@ -247,8 +249,8 @@ MaxIterations    20
 EndLevMar
 
 BeginParticleSwarm
-SwarmSize  24
-NumGenerations  100
+SwarmSize  8
+NumGenerations  1
 ConstrictionFactor  1.00
 CognitiveParam  2.00
 SocialParam  2.00

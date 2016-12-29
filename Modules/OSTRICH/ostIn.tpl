@@ -32,8 +32,8 @@ MaxIterations    20
 EndLevMar
 
 BeginParticleSwarm
-SwarmSize  24
-NumGenerations  100
+SwarmSize  8
+NumGenerations  1
 ConstrictionFactor  1.00
 CognitiveParam  2.00
 SocialParam  2.00

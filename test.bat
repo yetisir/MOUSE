@@ -1,2 +1,2 @@
-python UpFrac.py UDEC -n voronoiGranite
-rem python UpFrac.py HODS -n voronoiGranite
+rem python UpFrac.py UDEC -n voronoiGranite
+python UpFrac.py HODS -n voronoiGranite

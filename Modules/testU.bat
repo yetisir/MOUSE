@@ -1,1 +1,1 @@
-python Module_UDEC.py -n voronoiGranite
+python Module_OSTRICH.py -n voronoiGranite 

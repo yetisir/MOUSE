@@ -106,7 +106,7 @@ class ParameterEstimationModuleBaseClass(ModuleBaseClass):
         pass
             
     def outputFileName(self, data):
-        pass
+        return os.path.join(self.textDirectory, '{0}{1}'.format(self.baseName, '_DEM.pkl'))
 
 class ContinuumModuleBaseClass(ModuleBaseClass):
     def __init__(self, program, parameters, baseName):
