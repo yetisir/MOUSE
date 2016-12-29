@@ -7,78 +7,28 @@ import math
 import pickle
 
 class DataSet(object):
-    def __init__(self, dataClass=None, pickleData=None, fileName=None, loadBinary=True):
-        if fileName:
-            self.fileName = fileName
-            print('-'*70)
-            print('Initalizing {} Data'.format(fileName))
-            print('-'*70)
+    def __init__(self, fileName):
+        self.fileName = fileName
+        print('-'*70)
+        print('Initalizing {} Data'.format(fileName))
+        print('-'*70)
+        
+        filePath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'Data', 'Binary', self.fileName+'_DEM.pkl')
+        print('\tLoading binary DEM data')
+        pickleData = pickle.load(open(filePath, 'rb'))
 
-            parse = True
-            
-            filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'binaryData', self.fileName+'_binary.dat')
-            if loadBinary is True:
-                try:
-                    print('Attempting to load DEM Data from binary:')
-                    dataTime = os.path.getmtime(os.path.join('UDEC', 'compiledData', fileName + '___block.dat'))
-                    binTime = os.path.getmtime(filePath)
-                    if binTime > dataTime:
-                        pickleData = pickle.load(open(filePath, 'rb'))
-                        self.blockData = pickleData[0]
-                        self.contactData = pickleData[1]
-                        self.cornerData = pickleData[2]
-                        self.zoneData = pickleData[3]
-                        self.gridPointData = pickleData[4]
-                        self.domainData = pickleData[5]
-                        parse = False
-                        print('\tSuccess')
-                    else:
-                        print('\tFailed... Binary data out of date')
-                except:
-                    print('\tFailed... Binary data not found')
-                    
-            if parse is True:
-                print('Parsing DEM data from text files:')
-                blockFileName = fileName + '___block.dat'
-                contactFileName = fileName + '___contact.dat'
-                cornerFileName = fileName + '___corner.dat'
-                zoneFileName = fileName + '___zone.dat'
-                gridPointFileName = fileName + '___gridPoint.dat'
-                domainFileName = fileName + '___domain.dat'
-
-                print('\tLoading block data')
-                self.blockData = self.parseDataFile(blockFileName)
-                print('\tLoading contact data')
-                self.contactData = self.parseDataFile(contactFileName)
-                print('\tLoading corner data')
-                self.cornerData = self.parseDataFile(cornerFileName)
-                print('\tLoading zone data')
-                self.zoneData = self.parseDataFile(zoneFileName)
-                print('\tLoading gridPoint data')
-                self.gridPointData = self.parseDataFile(gridPointFileName)
-                print('\tLoading domain data')
-                self.domainData = self.parseDataFile(domainFileName)
-                print('Saving DEM data to binary:')
-                pickle.dump([self.blockData, self.contactData, self.cornerData, self.zoneData,
-                             self.gridPointData, self.domainData], open(filePath, 'wb'))
-                print('\tDone')
-        elif dataClass:
-            self.blockData = dataClass.blockData
-            self.contactData = dataClass.contactData
-            self.cornerData = dataClass.cornerData
-            self.zoneData = dataClass.zoneData
-            self.gridPointData = dataClass.gridPointData
-            self.domainData = dataClass.domainData
-            self.fileName = dataClass.fileName
-        elif pickleData:
-            self.blockData = pickleData[0]
-            self.contactData = pickleData[1]
-            self.cornerData = pickleData[2]
-            self.zoneData = pickleData[3]
-            self.gridPointData = pickleData[4]
-            self.domainData = pickleData[5]
-            self.fileName = 'test'
-        print('')
+        print('\tUnpacking block data')
+        self.blockData = pickleData[0]
+        print('\tUnpacking contact data')
+        self.contactData = pickleData[1]
+        print('\tUnpacking corner data')
+        self.cornerData = pickleData[2]
+        print('\tUnpacking zone data')
+        self.zoneData = pickleData[3]
+        print('\tUnpacking gridpoint data')
+        self.gridPointData = pickleData[4]
+        print('\tUnpacking domain data')
+        self.domainData = pickleData[5]
 
     def parseDataFile(self, fileName):
         file = open(os.path.join('UDEC', 'compiledData', fileName))
@@ -224,15 +174,12 @@ class DataSet(object):
         return S12
  
 class Homogenize(DataSet):
-    def __init__(self, centre, radius, dataClass=None, pickleData=None, fileName=None):
-        DataSet.__init__(self, dataClass=dataClass, pickleData=pickleData, fileName=fileName)
+    def __init__(self, centre, radius, fileName):
+        DataSet.__init__(self, fileName=fileName)
         
         self.centre = centre
         self.radius = radius
         
-        self.singleBlock = False
-        if len(self.contactData) == 0:
-            self.singleBlock = True
             
         self.calculateHomogenizationParameters()
     
@@ -468,37 +415,30 @@ class Homogenize(DataSet):
         self.insideBlocks = self.blocksInsideBoundary()
         print('\tCalculating outside blocks')
         self.outsideBlocks = self.blocksOutsideBoundary()
-        if not self.singleBlock:
-            print('\tCalculating inside boundary blocks')
-            self.insideBoundaryBlocks = self.boundaryBlocks + self.insideBlocks
-            print('\tCalculating boundary contacts')
-            self.boundaryContacts = self.contactsBetweenBlocks(self.outsideBlocks, self.boundaryBlocks)
-            print('\tCalculating boundary contact corners')
-            self.boundaryContactCorners = self.cornersOnContacts(self.boundaryContacts)
-            print('\tCalculating boundary contact blocks')
-            self.boundaryContactBlocks = self.blocksWithContacts(self.boundaryBlocks, self.boundaryContacts)
-            print('\tCalculating outside corners')
-            self.outsideCorners = self.cornersOutsideBoundary()
-            print('\tCalculating outside contacts')
-            self.outsideContacts = self.contactsOutsideBoundary()
-            print('\tCalculating boundary block corners')
-            self.boundaryBlockCorners = self.cornersOnBlocks(self.boundaryContactBlocks)
-            print('\tCalculating boundary corners')
-            self.boundaryCorners = common.listIntersection(self.boundaryContactCorners, self.boundaryBlockCorners)
-            #print('\tCalculating missing boundary corners')
-            #self.allBoundaryCorners = self.duplicateCorners(self.boundaryCorners, self.boundaryContactBlocks)
-            self.allBoundaryCorners = self.boundaryCorners
-            print('\tCalculating boundary block order')
-            self.boundaryBlocksOrdered = self.orderBlocks(self.boundaryContactBlocks, self.outsideContacts)
-            print('\tCalculating boundary corner order')
-            self.boundaryCornersOrdered = self.orderCorners(self.boundaryBlocksOrdered, self.allBoundaryCorners)
-        else:
-            print('\tCalculating boundary block order')
-            self.boundaryBlocksOrdered = self.outsideBlocks
-            print('\tCalculating boundary corner order')
-            self.boundaryCornersOrdered = self.singleElementCorners()
-            print('\tCalculating inside boundary blocks')
-            self.insideBoundaryBlocks = self.outsideBlocks
+        print('\tCalculating inside boundary blocks')
+        self.insideBoundaryBlocks = self.boundaryBlocks + self.insideBlocks
+        print('\tCalculating boundary contacts')
+        self.boundaryContacts = self.contactsBetweenBlocks(self.outsideBlocks, self.boundaryBlocks)
+        print('\tCalculating boundary contact corners')
+        self.boundaryContactCorners = self.cornersOnContacts(self.boundaryContacts)
+        print('\tCalculating boundary contact blocks')
+        self.boundaryContactBlocks = self.blocksWithContacts(self.boundaryBlocks, self.boundaryContacts)
+        print('\tCalculating outside corners')
+        self.outsideCorners = self.cornersOutsideBoundary()
+        print('\tCalculating outside contacts')
+        self.outsideContacts = self.contactsOutsideBoundary()
+        print('\tCalculating boundary block corners')
+        self.boundaryBlockCorners = self.cornersOnBlocks(self.boundaryContactBlocks)
+        print('\tCalculating boundary corners')
+        self.boundaryCorners = common.listIntersection(self.boundaryContactCorners, self.boundaryBlockCorners)
+        #print('\tCalculating missing boundary corners')
+        #self.allBoundaryCorners = self.duplicateCorners(self.boundaryCorners, self.boundaryContactBlocks)
+        self.allBoundaryCorners = self.boundaryCorners
+        print('\tCalculating boundary block order')
+        self.boundaryBlocksOrdered = self.orderBlocks(self.boundaryContactBlocks, self.outsideContacts)
+        print('\tCalculating boundary corner order')
+        self.boundaryCornersOrdered = self.orderCorners(self.boundaryBlocksOrdered, self.allBoundaryCorners)
+
                    
     def stress(self):
         print('Assessing homogenized stresses:')

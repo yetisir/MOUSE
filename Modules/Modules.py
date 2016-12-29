@@ -16,13 +16,16 @@ class ModuleBaseClass(object):
         dataDirectory =  os.path.join(topDirectory, 'Data')
         self.binaryDirectory = os.path.join(dataDirectory, 'Binary')
         self.textDirectory = os.path.join(dataDirectory, 'Text')
+        self.inputDirectory = os.path.join(dataDirectory, 'Input')
+        self.outputDirectory = os.path.join(dataDirectory, 'Output')
 
-    def printText(self, text):
+    def printText(self, text, end='\n'):
         if not self.suppressText:
-            print(text)
+            print(text, end=end, flush=True)
         #else save to file
     
     def printTitle(self, title):
+        self.printText('')
         self.printText('-'*70)
         self.printText(title)
         self.printText('-'*70)
@@ -31,7 +34,7 @@ class ModuleBaseClass(object):
         self.printText(section)
         
     def printStatus(self, status):
-        self.printText('\t{0}'.format(status))
+        self.printText('\t{0}...'.format(status), end='')
 
     def printDone(self):
         self.printText('Done')
@@ -45,7 +48,7 @@ class ModuleBaseClass(object):
             
     def saveData(self, data):
         with open(self.outputFileName(), 'wb') as file:
-            pickle.dump(file, data)
+            pickle.dump(data, file)
         
     def loadData(self):
         with open(self.inputFileName(), 'rb') as file:
@@ -88,10 +91,10 @@ class DemModuleBaseClass(ModuleBaseClass):
         self.type = 'DEM'
              
     def inputFileName(self, data):
-        return os.path.join(self.textDirectory, 'voronoiGranite(0.0)')
+        return None
             
-    def outputFileName(self, data): 
-        pass
+    def outputFileName(self): 
+        return os.path.join(self.binaryDirectory, '{0}{1}'.format(self.baseName, '_DEM.pkl'))
         
 
 class ParameterEstimationModuleBaseClass(ModuleBaseClass):

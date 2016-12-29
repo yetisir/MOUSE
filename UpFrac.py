@@ -13,7 +13,7 @@ def main():
     
 def importModelData(modelName):
     global modelData
-    modelData = importlib.import_module('Data.Model.'+modelName)
+    modelData = importlib.import_module('Data.Input.'+modelName)
     
 def run(modelName, radius=10):
     importModelData(modelName)
@@ -29,7 +29,7 @@ def udecHandler(args):
         print('Unity tagcheck')
         
 def hodsHandler(args):      
-    def main(revCentreX=None, revCentreY=None, revRadius=None):
+    #def main(revCentreX=None, revCentreY=None, revRadius=None):
     os.system('cls')
 
     if revCentreX == None:
@@ -59,6 +59,7 @@ def ostrichHandler(args):
         
     
 if __name__ == '__main__':
+    os.system('cls')
     parser = argparse.ArgumentParser(description='MOUSE: An Up-Scaling Utility for DEM Simulations')
     #parser.add_argument('-n', '--name', required=True ,help='Name of the file containing the model data without the extension')
 
@@ -67,10 +68,11 @@ if __name__ == '__main__':
     #TODO: import subparsers form module files
     
     udecParser = subparsers.add_parser('UDEC')
-    udecParser.set_defaults(func=udecHandler)
+    from Modules import Module_UDEC
+    udecParser = Module_UDEC.populateArgumentParser(udecParser)
+    #udecParser.set_defaults(func=udecHandler)
     
     hodsParser = subparsers.add_parser('HODS')
-    
     from Modules import Module_HODS    
     hodsParser = Module_HODS.populateArgumentParser(hodsParser)
     #hodsParser.set_defaults(func=hodsHandler)
@@ -92,7 +94,6 @@ def main(radius, optimizer='ParticleSwarm'): #identity=None,
     """
     docstgring
     """
-    os.system('cls')
     if radius:
         os.system('python ostrichHomogenize.py -n {0} -r {1}'.format(modelData.modelName, radius))
     else:

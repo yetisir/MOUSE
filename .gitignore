@@ -1,8 +1,9 @@
 # UpFrac Data Files
 Data/
 Modules/UDEC/compiledData
-OSTRICH/ostOutput
 Modules/UDEC/rawData
+Modules/__pycache__
+Modules/UDEC/*.dat
 
 
 # Byte-compiled / optimized / DLL files
