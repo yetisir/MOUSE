@@ -10,9 +10,9 @@ import psutil
 import sys
 
 if __name__ == '__main__':
-    from Modules import ParameterEstimationModuleBaseClass
+    from Base import ParameterEstimationModuleBaseClass
 else:
-    from .Modules import ParameterEstimationModuleBaseClass
+    from .Base import ParameterEstimationModuleBaseClass
 
 class Module_OSTRICH (ParameterEstimationModuleBaseClass):
     def __init__(self, baseName):

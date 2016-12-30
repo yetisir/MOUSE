@@ -1,9 +1,12 @@
-from Modules import HomogenizationModuleBaseClass
 import argparse
 import os
 import pickle
+if __name__ == '__main__':
+    from Base import ContinuumModuleBaseClass
+else:
+    from .Base import ContinuumModuleBaseClass
 
-class ABAQUS_Module (ContinuumModuleBaseClass):
+class Module_ABAQUS (ContinuumModuleBaseClass):
     def __init__(self, baseName):
         program = 'abaqus cae nogui=runAbaqus.py'
         parameters = {}
@@ -47,24 +50,39 @@ class ABAQUS_Module (ContinuumModuleBaseClass):
         self.formatOutput()
         
     def createArgumentParser(self):
-        self.parser = argparse.ArgumentParser(description='ostrichHomogenize: Homogenizes the specified DEM data')
-        self.parser.add_argument('-n', '--name', required=True ,help='Name of the file containing the model data without the extension')
-        self.parser.add_argument('-x', '--revX', type=float ,help='x coordinate of REV centre')
-        self.parser.add_argument('-y', '--revY', type=float ,help='y coordinate of REV centre')
-        self.parser.add_argument('-r', '--revRadius', type=float ,help='Radius of REV centre')
-        self.parser.add_argument('-i', '--interpolate', dest='interpolate', help='Interpolate Stress and strain data', action='store_true')
-        self.parser.add_argument('-ni', '--no-interpolate', dest='interpolate', help='Dont interpolate Stress and strain data', action='store_false')
-        self.parser.set_defaults(interpolate=False)
+        self.parser = argparse.ArgumentParser(description='abaqus')
+        #populateArgumentParser(self.parser)
         
     def parseArguments(self):
         arguments = self.parser.parse_args()
         self.modelName = arguments.name
-        self.revCentre = {'x':arguments.revX, 'y':arguments.revY}
-        self.revRadius = arguments.revRadius
-        self.interpolate = arguments.interpolate
+        
+def importModelData(modelName):
+    global modelData
+    modelData = importlib.import_module('Data.Input.'+modelName)
+ 
+def parserHandler(args):
+    #importModelData(args.name)
+    pass
+    numSimulations = 0
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'Data', 'Binary')
+    for file in os.listdir(path):
+        if args.name in file:
+            testNumSimulations = int(file[len(args.name)+3])    
+            if testNumSimulations > numSimulations:
+                numSimulations = testNumSimulations+1
+    for i in range(numSimulations):      
+        fileName = '{0}({1}.{2})'.format(args.name, 0, i)  
+        M = Module_HODS(fileName)
+        M.setParameters(args)
+        M.run()
+    
+def populateArgumentParser(parser):
+    parser.add_argument('-n', '--name', required=True ,help='Name of the file containing the model data without the extension')
+    parser.set_defaults(func=parserHandler)
+    
+    return parser
     
 if __name__ == '__main__':
-    M = HODS_Module('voronoiGranite(0.0)')
-    M.createArgumentParser()
-    M.parseArguments()
-    M.run()
+    pass
+    #not currently functional

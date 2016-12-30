@@ -6,7 +6,6 @@ Modules/__pycache__
 Modules/UDEC/*.dat
 Modules/OSTRICH/fittedHistory
 
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

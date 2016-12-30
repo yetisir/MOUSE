@@ -4,10 +4,10 @@ import pickle
 import importlib
 
 if __name__ == '__main__':
-    from Modules import HomogenizationModuleBaseClass
+    from Base import HomogenizationModuleBaseClass
     from HODS.HODS import Homogenize
 else:
-    from .Modules import HomogenizationModuleBaseClass
+    from .Base import HomogenizationModuleBaseClass
     from .HODS.HODS import Homogenize
 
 class Module_HODS (HomogenizationModuleBaseClass):
@@ -129,5 +129,5 @@ def populateArgumentParser(parser):
 if __name__ == '__main__':
     M = Module_HODS('voronoiGranite(0.0)')
     M.createArgumentParser()
-    M.parseArguments(self.parser.parse_args())
+    M.parseArguments(M.parser.parse_args())
     M.run()

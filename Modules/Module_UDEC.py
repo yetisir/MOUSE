@@ -6,9 +6,9 @@ import copy
 import importlib
 
 if __name__ == '__main__':
-    from Modules import DemModuleBaseClass
+    from Base import DemModuleBaseClass
 else:
-    from .Modules import DemModuleBaseClass
+    from .Base import DemModuleBaseClass
 
 class Module_UDEC(DemModuleBaseClass):
     def __init__(self, baseName):
