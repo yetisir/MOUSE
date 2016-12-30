@@ -6,7 +6,9 @@ SPHINXOPTS    = -b
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = MOUSE
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR        = _build
+PDF               = ../manual.pdf
+
 
 # Put it first so that "make" without argument is like "make help".
 help:
