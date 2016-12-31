@@ -7,14 +7,14 @@ Welcome to MOUSE's documentation!
 =================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
-
-   Modules
-	
-   Modules.HODS
-
-   MOUSE
+   
+   UserManual
+      
+   MouseReferenceManual
+   
+   HodsReferenceManual
 	
 Indices and tables
 ==================

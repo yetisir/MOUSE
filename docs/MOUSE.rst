@@ -1,5 +1,5 @@
-MOUSE module
-============
+MOUSE Documentation
+=============================
 
 .. automodule:: MOUSE
     :members:

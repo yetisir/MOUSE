@@ -40,6 +40,41 @@ import importlib
 import argparse
 import textwrap
 
+   
+def createParser():
+    """Creates an argparse parser object for MOUSE and imports argparse subparsers for each MOUSE Module
+    
+    Todo:
+        Scan subparsers from module files and import in order to remove hard-coded dependance
+        
+    Note:
+        Currenlty subparser imports are hard-coded in
+    
+    Returns:
+        argparse.ArgumentParser: the main argument parser for MOUSE populated with all required subparsers form modules.
+            
+    """
+    parser = argparse.ArgumentParser(description='MOUSE: An Up-Scaling Utility for DEM Simulations')
+    subparsers = parser.add_subparsers()
+     
+    udecParser = subparsers.add_parser('UDEC')
+    from Modules import Module_UDEC
+    udecParser = Module_UDEC.populateArgumentParser(udecParser)
+    
+    hodsParser = subparsers.add_parser('HODS')
+    from Modules import Module_HODS    
+    hodsParser = Module_HODS.populateArgumentParser(hodsParser)
+    
+    ostrichParser = subparsers.add_parser('OSTRICH')
+    from Modules import Module_OSTRICH
+    ostrichParser = Module_OSTRICH.populateArgumentParser(ostrichParser)
+    
+    abaqusParser = subparsers.add_parser('ABAQUS')
+    from Modules import Module_ABAQUS
+    abaqusParser = Module_ABAQUS.populateArgumentParser(abaqusParser)
+    
+    return parser
+        
 class SplashScreen(object):
     """Creates the splash screen and interface for MOUSE
 
@@ -159,59 +194,9 @@ class SplashScreen(object):
         """       
         self.printInBox('{0}{1}'.format(module.ljust(self.padWidth, '.'), status.rjust(self.padWidth, '.')))        
         
-def createMainParser():
-    """Creates an argparse parser object for MOUSE
-    
-    Note:
-        This does not populate the parser with arguments
-        
-    Returns:
-        argparse.ArgumentParser: the main argument parser for MOUSE
-            
-    """       
-    parser = argparse.ArgumentParser(description='MOUSE: An Up-Scaling Utility for DEM Simulations')
-    return parser
-    
-def importModuleParsers(parser):
-    """Imports argparse subparsers for each MOUSE Module
-    
-    Todo:
-        Scan subparsers from module files and import in order to remove hard-coded dependance
-        
-    Note:
-        Currenlty subparser imports are hard-coded in
-        
-    Args:
-        parser(argparse.ArgumentParser): the main argument parser for MOUSE 
-    
-    Returns:
-        argparse.ArgumentParser: the main argument parser for MOUSE now populated with all required subparsers form modules.
-            
-    """
-    subparsers = parser.add_subparsers()
-     
-    udecParser = subparsers.add_parser('UDEC')
-    from Modules import Module_UDEC
-    udecParser = Module_UDEC.populateArgumentParser(udecParser)
-    
-    hodsParser = subparsers.add_parser('HODS')
-    from Modules import Module_HODS    
-    hodsParser = Module_HODS.populateArgumentParser(hodsParser)
-    
-    ostrichParser = subparsers.add_parser('OSTRICH')
-    from Modules import Module_OSTRICH
-    ostrichParser = Module_OSTRICH.populateArgumentParser(ostrichParser)
-    
-    abaqusParser = subparsers.add_parser('ABAQUS')
-    from Modules import Module_ABAQUS
-    abaqusParser = Module_ABAQUS.populateArgumentParser(abaqusParser)
-    
-    return parser
-        
 if __name__ == '__main__':
     M = SplashScreen(boxWidth=55, textWidth=70, padWidth=15)
-    parser = createMainParser()
-    parser = importModuleParsers(parser)
+    parser = createParser()
     args = parser.parse_args()
     if len(sys.argv) <= 1:
         parser.print_usage()

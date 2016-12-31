@@ -1,15 +1,5 @@
-Modules package
-===============
-
-Subpackages
------------
-
-.. toctree::
-
-    Modules.HODS
-
-Submodules
-----------
+Modules Documentation
+==============================
 
 Modules.Module_ABAQUS module
 ----------------------------
@@ -47,15 +37,6 @@ Modules.Base module
 ----------------------
 
 .. automodule:: Modules.Base
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: Modules
     :members:
     :undoc-members:
     :show-inheritance:
