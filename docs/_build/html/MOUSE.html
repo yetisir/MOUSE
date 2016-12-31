@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MOUSE Documentation &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-MOUSE">
+<span id="mouse-documentation"></span><h1>MOUSE Documentation<a class="headerlink" href="#module-MOUSE" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="MOUSE.SplashScreen">
+<em class="property">class </em><code class="descclassname">MOUSE.</code><code class="descname">SplashScreen</code><span class="sig-paren">(</span><em>boxWidth=55</em>, <em>textWidth=70</em>, <em>padWidth=15</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Creates the splash screen and interface for MOUSE</p>
+<p>This class allows for the generation of an introduction screen for MOUSE. Here, a collection of printing methods are created in order to provide an environment for creating a consistent splash screen and interface.</p>
+<dl class="attribute">
+<dt id="MOUSE.SplashScreen.boxWidth">
+<code class="descname">boxWidth</code><a class="headerlink" href="#MOUSE.SplashScreen.boxWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; Character width of text box for splash screen</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MOUSE.SplashScreen.textWidth">
+<code class="descname">textWidth</code><a class="headerlink" href="#MOUSE.SplashScreen.textWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; Character width of text area for splash screen</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MOUSE.SplashScreen.padWidth">
+<code class="descname">padWidth</code><a class="headerlink" href="#MOUSE.SplashScreen.padWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; Character width of text area for padding on splash screen</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MOUSE.SplashScreen.printBoxLine">
+<code class="descname">printBoxLine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen.printBoxLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen.printBoxLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a horizontal line for the box in the centre of the console</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Prints a centred horizontal dashed line of length self.boxWidth on the console</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MOUSE.SplashScreen.printCentre">
+<code class="descname">printCentre</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen.printCentre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen.printCentre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints text in the centre of the console</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> (<em>str</em>) &#8211; text to be printed in the centre of the console</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Prints str to the centre of the console</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MOUSE.SplashScreen.printFullLine">
+<code class="descname">printFullLine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen.printFullLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen.printFullLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a horizontal line across the text width of the console</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Prints a horizontal dashed line of length self.textWidth on the console</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MOUSE.SplashScreen.printInBox">
+<code class="descname">printInBox</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen.printInBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen.printInBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints text in the centre of the box</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> (<em>str</em>) &#8211; text to be printed in the centre of the box</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Prints a horizontal dashed line of length self.textWidth on the console</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MOUSE.SplashScreen.printModule">
+<code class="descname">printModule</code><span class="sig-paren">(</span><em>module</em>, <em>status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen.printModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen.printModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints module and installation status in the splash box</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>module</strong> (<em>str</em>) &#8211; name of the module</li>
+<li><strong>status</strong> (<em>str</em>) &#8211; module status [installed, available, unavailable]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Prints the module name with the status in the splash box</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MOUSE.SplashScreen.printSplash">
+<code class="descname">printSplash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#SplashScreen.printSplash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.SplashScreen.printSplash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the console and prints the splash screen to the console</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Splash screen printed on console</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Import Modules and stuses from module files rather than hard coding them into this method</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="MOUSE.createParser">
+<code class="descclassname">MOUSE.</code><code class="descname">createParser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/MOUSE.html#createParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MOUSE.createParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an argparse parser object for MOUSE and imports argparse subparsers for each MOUSE Module</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Scan subparsers from module files and import in order to remove hard-coded dependance</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currenlty subparser imports are hard-coded in</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the main argument parser for MOUSE populated with all required subparsers form modules.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">argparse.ArgumentParser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/MOUSE.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/MOUSE.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

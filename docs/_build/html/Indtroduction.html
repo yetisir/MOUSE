@@ -1,0 +1,707 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation-guide">
+<h2>Installation Guide<a class="headerlink" href="#installation-guide" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installing-python-interpreter-and-dependencies">
+<h3>Installing python interpreter and dependencies<a class="headerlink" href="#installing-python-interpreter-and-dependencies" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="installing-mouse">
+<h3>Installing MOUSE<a class="headerlink" href="#installing-mouse" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="basic-settings">
+<h2>Basic Settings<a class="headerlink" href="#basic-settings" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Modules.Module_ABAQUS">
+<span id="modules-module-abaqus-module"></span><h3>Modules.Module_ABAQUS module<a class="headerlink" href="#module-Modules.Module_ABAQUS" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Modules.Module_ABAQUS.Module_ABAQUS">
+<em class="property">class </em><code class="descclassname">Modules.Module_ABAQUS.</code><code class="descname">Module_ABAQUS</code><span class="sig-paren">(</span><em>baseName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#Module_ABAQUS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.Module_ABAQUS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="Modules.html#Modules.Base.ContinuumModuleBaseClass" title="Modules.Base.ContinuumModuleBaseClass"><code class="xref py py-class docutils literal"><span class="pre">Modules.Base.ContinuumModuleBaseClass</span></code></a></p>
+<dl class="method">
+<dt id="Modules.Module_ABAQUS.Module_ABAQUS.formatOutput">
+<code class="descname">formatOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#Module_ABAQUS.formatOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.Module_ABAQUS.formatOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats ABAQUS data into consistent nested lists and writes them to binary file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">writes serialized binary data to file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_ABAQUS.Module_ABAQUS.parseInput">
+<code class="descname">parseInput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#Module_ABAQUS.parseInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.Module_ABAQUS.parseInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses input file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">returns data in a structured array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">struct</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_ABAQUS.Module_ABAQUS.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#Module_ABAQUS.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.Module_ABAQUS.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs the HODS homogenization Module which creates input files for OSTRICH MOUSE Module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">MOUSE homogenization data files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_ABAQUS.Module_ABAQUS.setParameters">
+<code class="descname">setParameters</code><span class="sig-paren">(</span><em>revCentreX=None</em>, <em>revCentreY=None</em>, <em>revRadius=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#Module_ABAQUS.setParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.Module_ABAQUS.setParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets module parameters</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">assess revCentreX, revCentreY and revRadius from data rather than from input file</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> (<em>dict</em>) &#8211; new parameters to be set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Sets module parameters</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_ABAQUS.importModelData">
+<code class="descclassname">Modules.Module_ABAQUS.</code><code class="descname">importModelData</code><span class="sig-paren">(</span><em>modelName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#importModelData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.importModelData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the input model parameters and assigns them to a global modelData variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>modelName</strong> (<em>str</em>) &#8211; Name of file containing the model data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Assigns model parameters from file to global modelData</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_ABAQUS.parserHandler">
+<code class="descclassname">Modules.Module_ABAQUS.</code><code class="descname">parserHandler</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#parserHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.parserHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function called after argparse subparser is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>argparse.Arguments</em>) &#8211; arparse parsed command line arguments.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">initializes ABAQUS Module and runs it</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_ABAQUS.populateArgumentParser">
+<code class="descclassname">Modules.Module_ABAQUS.</code><code class="descname">populateArgumentParser</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_ABAQUS.html#populateArgumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_ABAQUS.populateArgumentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds arguments to the argument parser</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parser</strong> (<em>argparse.ArgumentParser</em>) &#8211; empty argparse subparser</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">same argparse supparser, now populated with arguments</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">argparse.ArgumentParser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Modules.Module_HODS">
+<span id="modules-module-hods-module"></span><h3>Modules.Module_HODS module<a class="headerlink" href="#module-Modules.Module_HODS" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Modules.Module_HODS.Module_HODS">
+<em class="property">class </em><code class="descclassname">Modules.Module_HODS.</code><code class="descname">Module_HODS</code><span class="sig-paren">(</span><em>baseName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#Module_HODS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.Module_HODS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="Modules.html#Modules.Base.HomogenizationModuleBaseClass" title="Modules.Base.HomogenizationModuleBaseClass"><code class="xref py py-class docutils literal"><span class="pre">Modules.Base.HomogenizationModuleBaseClass</span></code></a></p>
+<p>Creates the HODS model interface for MOUSE</p>
+<p>This class allows for the generation of the usage of HODS through the MOUSE framework. Because HODS was also written in python, a direct link can be established between the programs rather than relying on I/O protols.</p>
+<dl class="attribute">
+<dt id="Modules.Module_HODS.Module_HODS.stressHistory">
+<code class="descname">stressHistory</code><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.stressHistory" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>nested list of float</em> &#8211; List of homogenized stress tensor history</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_HODS.Module_HODS.strainHistory">
+<code class="descname">strainHistory</code><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.strainHistory" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>nested list of float</em> &#8211; List of homogenized strain tensor history</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_HODS.Module_HODS.timeHistory">
+<code class="descname">timeHistory</code><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.timeHistory" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list of float</em> &#8211; List of simulation time steps</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_HODS.Module_HODS.revCentreX">
+<code class="descname">revCentreX</code><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.revCentreX" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; x position of centre of REV</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_HODS.Module_HODS.revCentreY">
+<code class="descname">revCentreY</code><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.revCentreY" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; y position of centre of REV</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_HODS.Module_HODS.revRadius">
+<code class="descname">revRadius</code><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.revRadius" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; radius of REV</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_HODS.Module_HODS.formatOutput">
+<code class="descname">formatOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#Module_HODS.formatOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.formatOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats Homogenization data into consistent nested lists and writes them to binary file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">writes serialized binary data to file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_HODS.Module_HODS.parseInput">
+<code class="descname">parseInput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#Module_HODS.parseInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.parseInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses input file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">returns data in a structured array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">struct</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_HODS.Module_HODS.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#Module_HODS.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs the HODS homogenization Module which creates input files for OSTRICH MOUSE Module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">MOUSE homogenization data files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_HODS.Module_HODS.setParameters">
+<code class="descname">setParameters</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#Module_HODS.setParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.Module_HODS.setParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets module parameters</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">assess revCentreX, revCentreY and revRadius from data rather than from input file</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> (<em>dict</em>) &#8211; new parameters to be set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Sets module parameters</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_HODS.importModelData">
+<code class="descclassname">Modules.Module_HODS.</code><code class="descname">importModelData</code><span class="sig-paren">(</span><em>modelName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#importModelData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.importModelData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the input model parameters and assigns them to a global modelData variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>modelName</strong> (<em>str</em>) &#8211; Name of file containing the model data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Assigns model parameters from file to global modelData</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_HODS.parserHandler">
+<code class="descclassname">Modules.Module_HODS.</code><code class="descname">parserHandler</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#parserHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.parserHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function called after argparse subparser is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>argparse.Arguments</em>) &#8211; arparse parsed command line arguments.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">initializes HODS Module and runs it</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_HODS.populateArgumentParser">
+<code class="descclassname">Modules.Module_HODS.</code><code class="descname">populateArgumentParser</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_HODS.html#populateArgumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_HODS.populateArgumentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds arguments to the argument parser</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parser</strong> (<em>argparse.ArgumentParser</em>) &#8211; empty argparse subparser</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">same argparse supparser, now populated with arguments</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">argparse.ArgumentParser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Modules.Module_OSTRICH">
+<span id="modules-module-ostrich-module"></span><h3>Modules.Module_OSTRICH module<a class="headerlink" href="#module-Modules.Module_OSTRICH" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH">
+<em class="property">class </em><code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">Module_OSTRICH</code><span class="sig-paren">(</span><em>baseName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="Modules.html#Modules.Base.ParameterEstimationModuleBaseClass" title="Modules.Base.ParameterEstimationModuleBaseClass"><code class="xref py py-class docutils literal"><span class="pre">Modules.Base.ParameterEstimationModuleBaseClass</span></code></a></p>
+<p>Creates the OSTRICH interface for MOUSE</p>
+<p>This class allows for the generation of the usage of UDEC through the MOUSE framework. As of current, there is still no capacity for full automation due to UDEC API limitations. As such, a batch UDEC script is generated which can then be called in UDEC with one command.</p>
+<dl class="attribute">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.identity">
+<code class="descname">identity</code><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.identity" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; for repeat trials, a different identity can be assigned to each game</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.MPI">
+<code class="descname">MPI</code><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.MPI" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em> &#8211; OSTRICH uses parallel processing if True</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.cores">
+<code class="descname">cores</code><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.cores" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; number of logical cores to be used for optimization</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.optimizer">
+<code class="descname">optimizer</code><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.optimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> &#8211; optimization algorithm to use. List can be found in OSTRICH Documentation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.formatOutput">
+<code class="descname">formatOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.formatOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.formatOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats parameter estimation data for MOUSE</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Copies OSTRICH output files to output directory</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.getBoundaryDisplacements">
+<code class="descname">getBoundaryDisplacements</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.getBoundaryDisplacements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.getBoundaryDisplacements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.getBoundaryStresses">
+<code class="descname">getBoundaryStresses</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.getBoundaryStresses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.getBoundaryStresses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.getModelConstants">
+<code class="descname">getModelConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.getModelConstants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.getModelConstants" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.getModelParameters">
+<code class="descname">getModelParameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.getModelParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.getModelParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns abaqus model input parameters</p>
+<div class="admonition-todo admonition" id="index-2">
+<p class="first admonition-title">Todo</p>
+<p class="last">move towards a  more object oriented method of handling data</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary of abaqus input parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.getOstrichParameters">
+<code class="descname">getOstrichParameters</code><span class="sig-paren">(</span><em>frontBias=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.getOstrichParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.getOstrichParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns OSTRICH parameters</p>
+<div class="admonition-todo admonition" id="index-3">
+<p class="first admonition-title">Todo</p>
+<p class="last">move towards a  more object oriented method of handling data</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary of udec parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.parseInput">
+<code class="descname">parseInput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.parseInput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.parseInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses input file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">creates Ostrich input files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs the OSTRICH Module which creates input files for OSTRICH, then runs OSTRICH</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">OSTRICH data files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Modules.Module_OSTRICH.Module_OSTRICH.setParameters">
+<code class="descname">setParameters</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#Module_OSTRICH.setParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.Module_OSTRICH.setParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets module parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parameters</strong> (<em>dict</em>) &#8211; new parameters to be set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Sets module parameters</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_OSTRICH.fillTemplate">
+<code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">fillTemplate</code><span class="sig-paren">(</span><em>template</em>, <em>parameters</em>, <em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#fillTemplate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.fillTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>fills a template file with variable parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>template</strong> (<em>str</em>) &#8211; file path to template file</li>
+<li><strong>parameters</strong> (<em>dict</em>) &#8211; dictionary of parameters and corresponding values</li>
+<li><strong>file</strong> (<em>str</em>) &#8211; destination file path for filled template</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">saves filled template to file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_OSTRICH.getVelocityString">
+<code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">getVelocityString</code><span class="sig-paren">(</span><em>velTable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#getVelocityString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.getVelocityString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a table of relative velocities (from -1 to 1) for the simulation in a linear string format for ABAQUS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>velTable</strong> (<em>list of float</em>) &#8211; times at which the velocity changes from negative to positive</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">table of relative velocities (-1 to 1) in ABAQUS format</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_OSTRICH.importMaterialData">
+<code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">importMaterialData</code><span class="sig-paren">(</span><em>materialName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#importMaterialData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.importMaterialData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the material parameters and assigns them to a global material variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>material</strong> (<em>str</em>) &#8211; Name of file containing the model data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Assigns model parameters from file to global material</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_OSTRICH.importModelData">
+<code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">importModelData</code><span class="sig-paren">(</span><em>modelName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#importModelData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.importModelData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports the input model parameters and assigns them to a global modelData variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>modelName</strong> (<em>str</em>) &#8211; Name of file containing the model data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Assigns model parameters from file to global modelData</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_OSTRICH.parserHandler">
+<code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">parserHandler</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#parserHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.parserHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function called after argparse subparser is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>argparse.Arguments</em>) &#8211; arparse parsed command line arguments.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">initializes UDEC Module and runs it</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Modules.Module_OSTRICH.populateArgumentParser">
+<code class="descclassname">Modules.Module_OSTRICH.</code><code class="descname">populateArgumentParser</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Modules/Module_OSTRICH.html#populateArgumentParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Modules.Module_OSTRICH.populateArgumentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds arguments to the argument parser</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parser</strong> (<em>argparse.ArgumentParser</em>) &#8211; empty argparse subparser</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">same argparse supparser, now populated with arguments</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">argparse.ArgumentParser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#installation-guide">Installation Guide</a><ul>
+<li><a class="reference internal" href="#installing-python-interpreter-and-dependencies">Installing python interpreter and dependencies</a></li>
+<li><a class="reference internal" href="#installing-mouse">Installing MOUSE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li><a class="reference internal" href="#basic-settings">Basic Settings</a><ul>
+<li><a class="reference internal" href="#module-Modules.Module_ABAQUS">Modules.Module_ABAQUS module</a></li>
+<li><a class="reference internal" href="#module-Modules.Module_HODS">Modules.Module_HODS module</a></li>
+<li><a class="reference internal" href="#module-Modules.Module_OSTRICH">Modules.Module_OSTRICH module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Indtroduction.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/Indtroduction.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

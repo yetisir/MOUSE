@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MOUSE &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for MOUSE</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.3&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;M. Yetisir&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;M. Yetisir&quot;</span><span class="p">,</span> <span class="s2">&quot;R. Gracie&quot;</span><span class="p">,</span> <span class="s2">&quot;M. Dusseault&quot;</span><span class="p">]</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;GPL&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;M. Yetisir&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;yetisir@gmail.com&quot;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s2">&quot;Development&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;MOUSE: (M)odular aut(O)mated (U)p-(S)caling softwar(E)</span>
+
+<span class="sd">This software represents the implementation of the up-scaling framework </span>
+<span class="sd">described in the thesis entitled &#39;Up-Scaling DEM Simulations of Discontinua&#39; </span>
+<span class="sd">written by M. Yetisir for the University of Waterloo in fulfillment of his thesis </span>
+<span class="sd">requirement for the degree of Master of Applied Science in Civil Engineering.</span>
+
+<span class="sd">This program is free software: you can redistribute it and/or modify</span>
+<span class="sd">it under the terms of the GNU General Public License as published by</span>
+<span class="sd">the Free Software Foundation, either version 3 of the License, or</span>
+<span class="sd">(at your option) any later version.</span>
+
+<span class="sd">This program is distributed in the hope that it will be useful,</span>
+<span class="sd">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">GNU General Public License for more details.</span>
+
+<span class="sd">You should have received a copy of the GNU General Public License</span>
+<span class="sd">along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;. </span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>
+
+   
+<div class="viewcode-block" id="createParser"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.createParser">[docs]</a><span class="k">def</span> <span class="nf">createParser</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Creates an argparse parser object for MOUSE and imports argparse subparsers for each MOUSE Module</span>
+<span class="sd">    </span>
+<span class="sd">    Todo:</span>
+<span class="sd">        Scan subparsers from module files and import in order to remove hard-coded dependance</span>
+<span class="sd">        </span>
+<span class="sd">    Note:</span>
+<span class="sd">        Currenlty subparser imports are hard-coded in</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.ArgumentParser: the main argument parser for MOUSE populated with all required subparsers form modules.</span>
+<span class="sd">            </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;MOUSE: An Up-Scaling Utility for DEM Simulations&#39;</span><span class="p">)</span>
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">()</span>
+     
+    <span class="n">udecParser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;UDEC&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">Modules</span> <span class="k">import</span> <span class="n">Module_UDEC</span>
+    <span class="n">udecParser</span> <span class="o">=</span> <span class="n">Module_UDEC</span><span class="o">.</span><span class="n">populateArgumentParser</span><span class="p">(</span><span class="n">udecParser</span><span class="p">)</span>
+    
+    <span class="n">hodsParser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;HODS&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">Modules</span> <span class="k">import</span> <span class="n">Module_HODS</span>    
+    <span class="n">hodsParser</span> <span class="o">=</span> <span class="n">Module_HODS</span><span class="o">.</span><span class="n">populateArgumentParser</span><span class="p">(</span><span class="n">hodsParser</span><span class="p">)</span>
+    
+    <span class="n">ostrichParser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;OSTRICH&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">Modules</span> <span class="k">import</span> <span class="n">Module_OSTRICH</span>
+    <span class="n">ostrichParser</span> <span class="o">=</span> <span class="n">Module_OSTRICH</span><span class="o">.</span><span class="n">populateArgumentParser</span><span class="p">(</span><span class="n">ostrichParser</span><span class="p">)</span>
+    
+    <span class="n">abaqusParser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s1">&#39;ABAQUS&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">Modules</span> <span class="k">import</span> <span class="n">Module_ABAQUS</span>
+    <span class="n">abaqusParser</span> <span class="o">=</span> <span class="n">Module_ABAQUS</span><span class="o">.</span><span class="n">populateArgumentParser</span><span class="p">(</span><span class="n">abaqusParser</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">parser</span></div>
+        
+<div class="viewcode-block" id="SplashScreen"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen">[docs]</a><span class="k">class</span> <span class="nc">SplashScreen</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates the splash screen and interface for MOUSE</span>
+
+<span class="sd">    This class allows for the generation of an introduction screen for MOUSE. Here, a collection of printing methods are created in order to provide an environment for creating a consistent splash screen and interface. </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        boxWidth (int): Character width of text box for splash screen</span>
+<span class="sd">        textWidth (int): Character width of text area for splash screen</span>
+<span class="sd">        padWidth (int): Character width of text area for padding on splash screen</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxWidth</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span> <span class="n">textWidth</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">padWidth</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes and displayes splash screen</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            boxWidth (int, optional): Character width of text box for splash screen</span>
+<span class="sd">            textWidth (int, optional): Character width of text area for splash screen</span>
+<span class="sd">            padWidth (int, optional): Character width of text area for padding on splash screen</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxWidth</span> <span class="o">=</span> <span class="n">boxWidth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textWidth</span> <span class="o">=</span> <span class="n">textWidth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padWidth</span> <span class="o">=</span> <span class="n">padWidth</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printSplash</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="SplashScreen.printSplash"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen.printSplash">[docs]</a>    <span class="k">def</span> <span class="nf">printSplash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clears the console and prints the splash screen to the console</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None:Splash screen printed on console</span>
+<span class="sd">            </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            Import Modules and stuses from module files rather than hard coding them into this method</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>        
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printCentre</span><span class="p">(</span><span class="s1">&#39;M O U S E: Version </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printBoxLine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;(M)odular aut(O)mated (U)p-(S)caling softwar(E)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;An Up-Scaling Utility for DEM Simulations&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printBoxLine</span><span class="p">()</span>
+        
+        <span class="n">introductionString</span> <span class="o">=</span> <span class="s1">&#39;This software represents the implementation of the up-scaling framework described in the thesis entitled </span><span class="se">\&#39;</span><span class="s1">Up-Scaling DEM Simulations of Discontinua</span><span class="se">\&#39;</span><span class="s1"> written by M. Yetisir for the University of Waterloo in fulfillment of his thesis requirement for the degree of Master of Applied Science in Civil Engineering.&#39;</span>
+        <span class="n">wrappedIntroductionString</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">introductionString</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxWidth</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">wrappedIntroductionString</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;Copyright </span><span class="se">\N{COPYRIGHT SIGN}</span><span class="s1">: M. Yetisir 2016&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printBoxLine</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;Available Modules:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">printModule</span><span class="p">(</span><span class="s1">&#39;UDEC&#39;</span><span class="p">,</span> <span class="s1">&#39;Installed&#39;</span><span class="p">)</span><span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printModule</span><span class="p">(</span><span class="s1">&#39;HODS&#39;</span><span class="p">,</span> <span class="s1">&#39;Installed&#39;</span><span class="p">)</span><span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printModule</span><span class="p">(</span><span class="s1">&#39;ABAQUS&#39;</span><span class="p">,</span> <span class="s1">&#39;Installed&#39;</span><span class="p">)</span><span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printModule</span><span class="p">(</span><span class="s1">&#39;OSTRICH&#39;</span><span class="p">,</span> <span class="s1">&#39;Installed&#39;</span><span class="p">)</span><span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printBoxLine</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="SplashScreen.printFullLine"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen.printFullLine">[docs]</a>    <span class="k">def</span> <span class="nf">printFullLine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints a horizontal line across the text width of the console</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None:Prints a horizontal dashed line of length self.textWidth on the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">printCentre</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textWidth</span><span class="o">*</span><span class="s1">&#39;-&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SplashScreen.printBoxLine"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen.printBoxLine">[docs]</a>    <span class="k">def</span> <span class="nf">printBoxLine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints a horizontal line for the box in the centre of the console</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None:Prints a centred horizontal dashed line of length self.boxWidth on the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">printCentre</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boxWidth</span><span class="o">*</span><span class="s1">&#39;-&#39;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="SplashScreen.printCentre"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen.printCentre">[docs]</a>    <span class="k">def</span> <span class="nf">printCentre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints text in the centre of the console</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            text(str): text to be printed in the centre of the console</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None:Prints str to the centre of the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textWidth</span><span class="p">))</span></div>
+        
+<div class="viewcode-block" id="SplashScreen.printInBox"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen.printInBox">[docs]</a>    <span class="k">def</span> <span class="nf">printInBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints text in the centre of the box</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            text(str): text to be printed in the centre of the box</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None:Prints a horizontal dashed line of length self.textWidth on the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">printCentre</span><span class="p">(</span><span class="s1">&#39;|</span><span class="si">{0}</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boxWidth</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textWidth</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SplashScreen.printModule"><a class="viewcode-back" href="../MouseReferenceManual.html#MOUSE.SplashScreen.printModule">[docs]</a>    <span class="k">def</span> <span class="nf">printModule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints module and installation status in the splash box</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            module(str): name of the module</span>
+<span class="sd">            status(str): module status [installed, available, unavailable]</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None:Prints the module name with the status in the splash box</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">printInBox</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">padWidth</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">),</span> <span class="n">status</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">padWidth</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)))</span>        </div></div>
+        
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">SplashScreen</span><span class="p">(</span><span class="n">boxWidth</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span> <span class="n">textWidth</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">padWidth</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">createParser</span><span class="p">()</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">print_usage</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

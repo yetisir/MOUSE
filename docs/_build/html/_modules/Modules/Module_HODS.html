@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modules.Module_HODS &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Modules.Module_HODS</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>  
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">from</span> <span class="nn">.Base</span> <span class="k">import</span> <span class="n">HomogenizationModuleBaseClass</span>
+<span class="kn">from</span> <span class="nn">.HODS.HODS</span> <span class="k">import</span> <span class="n">Homogenize</span>
+
+
+<div class="viewcode-block" id="importModelData"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.importModelData">[docs]</a><span class="k">def</span> <span class="nf">importModelData</span><span class="p">(</span><span class="n">modelName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports the input model parameters and assigns them to a global modelData variable</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        modelName(str): Name of file containing the model data.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: Assigns model parameters from file to global modelData</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">modelData</span>
+    <span class="n">modelData</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;Data.Input.&#39;</span><span class="o">+</span><span class="n">modelName</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="parserHandler"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.parserHandler">[docs]</a><span class="k">def</span> <span class="nf">parserHandler</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function called after argparse subparser is executed</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        args(argparse.Arguments): arparse parsed command line arguments.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: initializes HODS Module and runs it</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numSimulations</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))),</span> <span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="s1">&#39;Binary&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">testNumSimulations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">])</span>    
+            <span class="k">if</span> <span class="n">testNumSimulations</span> <span class="o">&gt;</span> <span class="n">numSimulations</span><span class="p">:</span>
+                <span class="n">numSimulations</span> <span class="o">=</span> <span class="n">testNumSimulations</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numSimulations</span><span class="p">):</span>      
+        <span class="n">fileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>  
+        <span class="n">M</span> <span class="o">=</span> <span class="n">Module_HODS</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+        <span class="n">M</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">M</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="populateArgumentParser"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.populateArgumentParser">[docs]</a><span class="k">def</span> <span class="nf">populateArgumentParser</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds arguments to the argument parser</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        parser(argparse.ArgumentParser): empty argparse subparser</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.ArgumentParser: same argparse supparser, now populated with arguments</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the file containing the model data without the extension&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-x&#39;</span><span class="p">,</span> <span class="s1">&#39;--revX&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;x coordinate of REV centre&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="s1">&#39;--revY&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;y coordinate of REV centre&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;--revRadius&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Radius of REV centre&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">parserHandler</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span></div>
+    
+<div class="viewcode-block" id="Module_HODS"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.Module_HODS">[docs]</a><span class="k">class</span> <span class="nc">Module_HODS</span> <span class="p">(</span><span class="n">HomogenizationModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates the HODS model interface for MOUSE</span>
+
+<span class="sd">    This class allows for the generation of the usage of HODS through the MOUSE framework. Because HODS was also written in python, a direct link can be established between the programs rather than relying on I/O protols.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        stressHistory (nested list of float): List of homogenized stress tensor history</span>
+<span class="sd">        strainHistory (nested list of float): List of homogenized strain tensor history </span>
+<span class="sd">        timeHistory (list of float): List of simulation time steps</span>
+<span class="sd">        revCentreX(float): x position of centre of REV</span>
+<span class="sd">        revCentreY(float): y position of centre of REV</span>
+<span class="sd">        revRadius(float): radius of REV</span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for homogenization Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">                         </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="s1">&#39;python HODS.py&#39;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">HomogenizationModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="Module_HODS.parseInput"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.Module_HODS.parseInput">[docs]</a>    <span class="k">def</span> <span class="nf">parseInput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses input file</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            struct: returns data in a structured array</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Module_HODS.formatOutput"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.Module_HODS.formatOutput">[docs]</a>    <span class="k">def</span> <span class="nf">formatOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Formats Homogenization data into consistent nested lists and writes them to binary file</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: writes serialized binary data to file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;Saving homogenization time history:&#39;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">_HOM.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">)),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;time S11 S22 S12 LE11 LE22 LE12</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">S11History</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">]</span>
+            <span class="n">S22History</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">]</span>
+            <span class="n">S12History</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">]</span>
+            <span class="n">LE11History</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">]</span>
+            <span class="n">LE22History</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">]</span>
+            <span class="n">LE12History</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">)):</span>
+                <span class="n">LE11</span> <span class="o">=</span> <span class="n">LE11History</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>                 
+                <span class="n">LE22</span> <span class="o">=</span> <span class="n">LE22History</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">LE12</span> <span class="o">=</span> <span class="n">LE12History</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">S11</span> <span class="o">=</span> <span class="n">S11History</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">S22</span> <span class="o">=</span> <span class="n">S22History</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">S12</span> <span class="o">=</span> <span class="n">S12History</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">S11</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">S22</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">S12</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">S12</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">LE11</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">LE22</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">LE12</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">LE12</span>
+
+                <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeHistory</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="p">[</span><span class="n">time</span><span class="p">,</span> <span class="n">S11</span><span class="p">,</span> <span class="n">S22</span><span class="p">,</span> <span class="n">S12</span><span class="p">,</span> <span class="n">LE11</span><span class="p">,</span> <span class="n">LE22</span><span class="p">,</span> <span class="n">LE12</span><span class="p">]</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">record</span><span class="p">))</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">timeHistory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">]</span>
+
+        <span class="n">fileName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputFileName</span><span class="p">()</span>
+        <span class="n">bundle</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">timeHistory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveData</span><span class="p">(</span><span class="n">bundle</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Done&#39;</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="Module_HODS.setParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.Module_HODS.setParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets module parameters</span>
+<span class="sd">         </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            assess revCentreX, revCentreY and revRadius from data rather than from input file</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            parameters(dict): new parameters to be set</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: Sets module parameters</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revCentreX</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">revX</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revCentreY</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">revY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revRadius</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">revRadius</span>
+            
+        <span class="n">importModelData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">revCentreX</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">revCentreX</span> <span class="o">=</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">revCentreY</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">revCentreY</span> <span class="o">=</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">revRadius</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">revRadius</span> <span class="o">=</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="n">modelData</span><span class="o">.</span><span class="n">blockSize</span><span class="o">*</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revCentre</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">revCentreX</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">revCentreY</span><span class="p">}</span></div>
+        
+<div class="viewcode-block" id="Module_HODS.run"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_HODS.Module_HODS.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;runs the HODS homogenization Module which creates input files for OSTRICH MOUSE Module</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: MOUSE homogenization data files</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">Homogenize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revCentre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">revRadius</span><span class="p">,</span> <span class="n">fileName</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stressHistory</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">stress</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strainHistory</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">strain</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeHistory</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatOutput</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

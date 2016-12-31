@@ -1,0 +1,506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modules.Module_UDEC &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Modules.Module_UDEC</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>  
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">copy</span> 
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">from</span> <span class="nn">.Base</span> <span class="k">import</span> <span class="n">DemModuleBaseClass</span>
+
+    
+<div class="viewcode-block" id="importModelData"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.importModelData">[docs]</a><span class="k">def</span> <span class="nf">importModelData</span><span class="p">(</span><span class="n">modelName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports the input model parameters and assigns them to a global modelData variable</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        modelName(str): Name of file containing the model data.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: Assigns model parameters from file to global modelData</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">modelData</span>
+    <span class="n">modelData</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;Data.Input.&#39;</span><span class="o">+</span><span class="n">modelName</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="parserHandler"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.parserHandler">[docs]</a><span class="k">def</span> <span class="nf">parserHandler</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function called after argparse subparser is executed</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        args(argparse.Arguments): arparse parsed command line arguments.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: initializes UDEC Module and runs it</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">importModelData</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">Module_UDEC</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">M</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="populateArgumentParser"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.populateArgumentParser">[docs]</a><span class="k">def</span> <span class="nf">populateArgumentParser</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds arguments to the argument parser</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        parser(argparse.ArgumentParser): empty argparse subparser</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.ArgumentParser: same argparse supparser, now populated with arguments</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the file containing the model data without the extension&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">parserHandler</span><span class="p">)</span>   
+    <span class="k">return</span> <span class="n">parser</span></div>
+    
+<div class="viewcode-block" id="fileList"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.fileList">[docs]</a><span class="k">def</span> <span class="nf">fileList</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets list of all files in a given directory</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        path(str): directory to get file list from</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of str: List of file names in directory</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">files</span></div>
+        
+<div class="viewcode-block" id="simulationFiles"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.simulationFiles">[docs]</a><span class="k">def</span> <span class="nf">simulationFiles</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">rawPath</span><span class="p">,</span> <span class="n">compiledPath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Isolates files that contain UDEC simulation Data</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        files(list of str): List of files to be searched</span>
+<span class="sd">        rawPath(str): directory in which the raw UDEC data is contained</span>
+<span class="sd">        compiledPath(str): directory in which the compiled UDEC data is contained</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of str: List of simulation files without file extension</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">simulations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">compiledFiles</span> <span class="o">=</span> <span class="n">fileList</span><span class="p">(</span><span class="n">compiledPath</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">simulationName</span> <span class="o">=</span> <span class="n">file</span><span class="p">[:</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="s1">&#39;dat&#39;</span> <span class="ow">in</span> <span class="n">extension</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file</span><span class="p">[:</span><span class="n">file</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.dat&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span> <span class="ow">in</span> <span class="n">compiledFiles</span><span class="p">:</span>
+                <span class="n">rTime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rawPath</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+                <span class="n">cTime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compiledPath</span><span class="p">,</span> <span class="n">file</span><span class="p">[:</span><span class="n">file</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.dat&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="n">rTime</span> <span class="o">&gt;</span> <span class="n">cTime</span><span class="p">:</span>
+                    <span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simulationName</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simulationName</span><span class="p">)</span>
+    <span class="n">simulations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">simulations</span><span class="p">))</span>
+    <span class="n">simulations</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">simulations</span></div>
+
+<div class="viewcode-block" id="compileFiles"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.compileFiles">[docs]</a><span class="k">def</span> <span class="nf">compileFiles</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">rawPath</span><span class="p">,</span> <span class="n">compiledPath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;compiles the raw UDEC data files for each timestep into one file</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        simulations(list of str): List of simulations names</span>
+<span class="sd">        files(list of str): List of files to be compiled</span>
+<span class="sd">        rawPath(str): directory in which the raw UDEC data is contained</span>
+<span class="sd">        compiledPath(str): directory in which the compiled UDEC data is contained</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: saves compiled data to file.</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{0}</span><span class="s1">...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">simulationFiles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;dat&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span> <span class="ow">and</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">simulationFiles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compiledPath</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">simulation</span><span class="p">)),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rawPath</span><span class="p">,</span> <span class="n">simulationFiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+                <span class="n">fout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">fin</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[:</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">simulationFile</span> <span class="ow">in</span> <span class="n">simulationFiles</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rawPath</span><span class="p">,</span> <span class="n">simulationFile</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+                    <span class="n">fout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">fin</span><span class="o">.</span><span class="n">readlines</span><span class="p">()[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>    </div>
+
+<div class="viewcode-block" id="parseDataFile"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.parseDataFile">[docs]</a><span class="k">def</span> <span class="nf">parseDataFile</span><span class="p">(</span><span class="n">fileName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses raw DEM data from tab delimited text tile into nested python dictionary</span>
+<span class="sd">    </span>
+<span class="sd">    The raw DEM Data is considered to be comprised of six distinct types: block data, contact data, corner data, domain data, grid point data, and zone data. Here, each block, contact, corner, domain, grid point, and zone is assigned a unique 7-digit numeric identifier (assuming here that the number of components in the system does not exceed 10 million) by which the associated data can be accessed. The same identifier may be repeated for different data types.Each DEM data hash table has three levels of nesting. The first level keys are the simulation times, which returns the second level of hash tables. The second level keys are the component identifiers, which returns a third level hash table. In this third level, the component attributes can be accessed using the attribute name as the key. </span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        fileName(str): name of data file to be parsed</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        nested DEM dict: Tripple nested dictionary of DEM data</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">absPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">absPath</span><span class="p">,</span> <span class="s1">&#39;UDEC&#39;</span><span class="p">,</span> <span class="s1">&#39;compiledData&#39;</span><span class="p">,</span> <span class="n">fileName</span><span class="p">))</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">types</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">timeData</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">firstLoop</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()[</span><span class="mi">0</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">record</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">__ne__</span><span class="p">,</span> <span class="n">record</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">record</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">dictTime</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">timeData</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">UnboundLocalError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">firstLoop</span><span class="p">:</span>
+            <span class="n">dictTime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">firstLoop</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">dictTime</span> <span class="o">!=</span> <span class="n">time</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">dictTime</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">timeData</span><span class="p">)</span>
+            <span class="n">dictTime</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="n">recordData</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+                <span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+                <span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span>
+                <span class="n">csv</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csv</span><span class="p">)):</span>
+                    <span class="n">csv</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">csv</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">csv</span>
+            <span class="n">recordData</span><span class="p">[</span><span class="n">header</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">timeData</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">recordData</span>
+        <span class="n">oldRecord</span> <span class="o">=</span> <span class="n">record</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+    
+<div class="viewcode-block" id="Module_UDEC"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC">[docs]</a><span class="k">class</span> <span class="nc">Module_UDEC</span><span class="p">(</span><span class="n">DemModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates the UDEC model interface for MOUSE</span>
+
+<span class="sd">    This class allows for the generation of the usage of UDEC through the MOUSE framework. As of current, there is still no capacity for full automation due to UDEC API limitations. As such, a batch UDEC script is generated which can then be called in UDEC with one command.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        fileName (str): name of simulation data file</span>
+<span class="sd">        UDECParameters (dict): Dictionary of UDEC parameters as keys and the associated value as dictionary values</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for homogenization Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">                         </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="s1">&#39;python HODS.py&#39;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">DemModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Module_UDEC.inputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.inputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">inputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the default input settings to import python data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of input python data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="s1">&#39;.py&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Module_UDEC.outputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.outputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">outputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Overloads the default input settings to export</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: writes serialized binary data to file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">,</span> <span class="s1">&#39;_DEM.pkl&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Module_UDEC.parseInput"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.parseInput">[docs]</a>    <span class="k">def</span> <span class="nf">parseInput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses input file</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            struct: returns data in a structured array</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">()</span></div>
+  
+<div class="viewcode-block" id="Module_UDEC.formatOutput"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.formatOutput">[docs]</a>    <span class="k">def</span> <span class="nf">formatOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Formats DEM data into consistent nested hash tables and writes them to binary file</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: writes serialized binary data to file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printTitle</span><span class="p">(</span><span class="s1">&#39;Compiling All UDEC Data Files&#39;</span><span class="p">)</span>
+        <span class="n">absPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+        <span class="n">rawPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">absPath</span><span class="p">,</span> <span class="s1">&#39;UDEC&#39;</span><span class="p">,</span> <span class="s1">&#39;rawData&#39;</span><span class="p">)</span>
+        <span class="n">compiledPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">absPath</span><span class="p">,</span> <span class="s1">&#39;UDEC&#39;</span><span class="p">,</span> <span class="s1">&#39;compiledData&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Getting list of files in data directory&#39;</span><span class="p">)</span>
+        <span class="n">filesInDirectory</span> <span class="o">=</span> <span class="n">fileList</span><span class="p">(</span><span class="n">rawPath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Isolating files for compilation&#39;</span><span class="p">)</span>
+        <span class="n">simulations</span> <span class="o">=</span> <span class="n">simulationFiles</span><span class="p">(</span><span class="n">filesInDirectory</span><span class="p">,</span> <span class="n">rawPath</span><span class="p">,</span> <span class="n">compiledPath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Compiling data files&#39;</span><span class="p">)</span>
+        <span class="n">compileFiles</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">filesInDirectory</span><span class="p">,</span> <span class="n">rawPath</span><span class="p">,</span> <span class="n">compiledPath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+
+        <span class="n">numSimulations</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filesInDirectory</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">baseName</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">testNumSimulations</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">])</span>    
+                <span class="k">if</span> <span class="n">testNumSimulations</span> <span class="o">&gt;</span> <span class="n">numSimulations</span><span class="p">:</span>
+                    <span class="n">numSimulations</span> <span class="o">=</span> <span class="n">testNumSimulations</span><span class="o">+</span><span class="mi">1</span>
+                    
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numSimulations</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printTitle</span><span class="p">(</span><span class="s1">&#39;Parsing </span><span class="si">{0}</span><span class="s1"> DEM data from text files&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">))</span>
+            <span class="n">blockFileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">___block.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">contactFileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">___contact.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">cornerFileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">___corner.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">zoneFileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">___zone.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">gridPointFileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">___gridPoint.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="n">domainFileName</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">___domain.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileName</span><span class="p">)</span>
+           
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Loading block data&#39;</span><span class="p">)</span>
+            <span class="n">blockData</span> <span class="o">=</span> <span class="n">parseDataFile</span><span class="p">(</span><span class="n">blockFileName</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Loading contact data&#39;</span><span class="p">)</span>
+            <span class="n">contactData</span> <span class="o">=</span> <span class="n">parseDataFile</span><span class="p">(</span><span class="n">contactFileName</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Loading corner data&#39;</span><span class="p">)</span>
+            <span class="n">cornerData</span> <span class="o">=</span> <span class="n">parseDataFile</span><span class="p">(</span><span class="n">cornerFileName</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Loading zone data&#39;</span><span class="p">)</span>
+            <span class="n">zoneData</span> <span class="o">=</span> <span class="n">parseDataFile</span><span class="p">(</span><span class="n">zoneFileName</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Loading gridPoint data&#39;</span><span class="p">)</span>
+            <span class="n">gridPointData</span> <span class="o">=</span> <span class="n">parseDataFile</span><span class="p">(</span><span class="n">gridPointFileName</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Loading domain data&#39;</span><span class="p">)</span>
+            <span class="n">domainData</span> <span class="o">=</span> <span class="n">parseDataFile</span><span class="p">(</span><span class="n">domainFileName</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Saving DEM data to binary&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">saveData</span><span class="p">([</span><span class="n">blockData</span><span class="p">,</span> <span class="n">contactData</span><span class="p">,</span> <span class="n">cornerData</span><span class="p">,</span> <span class="n">zoneData</span><span class="p">,</span>
+                         <span class="n">gridPointData</span><span class="p">,</span> <span class="n">domainData</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span></div>
+            
+<div class="viewcode-block" id="Module_UDEC.setParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.setParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets module parameters</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            parameters(dict): new parameters to be set</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: Sets module parameters</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+        
+<div class="viewcode-block" id="Module_UDEC.getVelocityString"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.getVelocityString">[docs]</a>    <span class="k">def</span> <span class="nf">getVelocityString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velTable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates a table of relative velocities (from -1 to 1) for the simulation in a linear string format for UDEC</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            velTable(list of float): times at which the velocity changes from negative to positive</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: table of relative velocities (-1 to 1) in UDEC format</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">accelTime</span> <span class="o">=</span> <span class="n">velTable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span>
+        <span class="n">amp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">vString</span> <span class="o">=</span> <span class="s1">&#39;((0, </span><span class="si">{0}</span><span class="s1">), &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">amp</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">velTable</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">vString</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">), (</span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">), &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">velTable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">accelTime</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">velTable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">accelTime</span><span class="p">,</span> <span class="n">amp</span><span class="o">*-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">amp</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*-</span><span class="mi">1</span>
+        <span class="n">vString</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">))&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">velTable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">amp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vString</span></div>
+        
+<div class="viewcode-block" id="Module_UDEC.getUDECParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.getUDECParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getUDECParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns UDEC parameters</span>
+<span class="sd">        </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            move towards a  more object oriented method of handling data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: dictionary of udec parameters</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rangeOffset</span> <span class="o">=</span> <span class="n">modelData</span><span class="o">.</span><span class="n">blockSize</span><span class="o">/</span><span class="mi">1000</span>
+        <span class="n">bRange</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1"> </span><span class="si">{0}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">+</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="n">rangeOffset</span><span class="p">)</span>
+        <span class="n">tRange</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">+</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">-</span><span class="n">rangeOffset</span><span class="p">)</span>
+        <span class="n">lRange</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1"> </span><span class="si">{0}</span><span class="s1">,</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="n">rangeOffset</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">+</span><span class="n">rangeOffset</span><span class="p">)</span>
+        <span class="n">rRange</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1">,</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">-</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="o">+</span><span class="n">rangeOffset</span><span class="p">,</span> <span class="o">-</span><span class="n">rangeOffset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;$nSteps&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">numberOfSteps</span><span class="p">,</span> <span class="c1">#depending on the number of contacts, the memory is exceeded with too many steps. future iteration of cycleModel.fis shall write to file after each step rather than after all steps to reduce the memory load. </span>
+            <span class="s1">&#39;$mSize&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="p">,</span>
+            <span class="s1">&#39;$bSize&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">blockSize</span><span class="p">,</span>
+            <span class="s1">&#39;$meshSize&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">meshSize</span><span class="p">,</span>
+            <span class="s1">&#39;$round&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">blockSize</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span>
+            <span class="s1">&#39;$vRound&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">blockSize</span><span class="p">)</span><span class="o">/</span><span class="mi">20</span><span class="p">,</span>
+            <span class="s1">&#39;$vIterations&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">voronoiIterations</span><span class="p">,</span>
+            <span class="s1">&#39;$edge&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">blockSize</span><span class="p">)</span><span class="o">/</span><span class="mi">50</span><span class="p">,</span>
+            <span class="s1">&#39;$vSeed&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">voronoiSeed</span><span class="p">,</span>
+            <span class="s1">&#39;$rho&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
+            <span class="s1">&#39;$bulk&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">modelData</span><span class="o">.</span><span class="n">nu</span><span class="p">)),</span>
+            <span class="s1">&#39;$shear&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">E</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">modelData</span><span class="o">.</span><span class="n">nu</span><span class="p">)),</span>
+            <span class="s1">&#39;$jks&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">jks</span><span class="p">,</span>
+            <span class="s1">&#39;$jkn&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">jkn</span><span class="p">,</span>
+            <span class="s1">&#39;$jFriction&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">jFriction</span><span class="p">,</span>
+            <span class="s1">&#39;$jCohesion&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">jCohesion</span><span class="p">,</span>
+            <span class="s1">&#39;$jTension&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">jTension</span><span class="p">,</span>
+            <span class="s1">&#39;$jDilation&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">jDilation</span><span class="p">,</span>
+            <span class="s1">&#39;$rFriction&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">rFriction</span><span class="p">,</span>
+            <span class="s1">&#39;$rCohesion&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">rCohesion</span><span class="p">,</span>
+            <span class="s1">&#39;$rTension&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">rTension</span><span class="p">,</span>
+            <span class="s1">&#39;$rDilation&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">rDilation</span><span class="p">,</span>
+            <span class="s1">&#39;$bRange&#39;</span><span class="p">:</span> <span class="n">bRange</span><span class="p">,</span>
+            <span class="s1">&#39;$tRange&#39;</span><span class="p">:</span> <span class="n">tRange</span><span class="p">,</span>
+            <span class="s1">&#39;$lRange&#39;</span><span class="p">:</span> <span class="n">lRange</span><span class="p">,</span>
+            <span class="s1">&#39;$rRange&#39;</span><span class="p">:</span> <span class="n">rRange</span><span class="p">,</span>
+            <span class="s1">&#39;$timeFraction&#39;</span><span class="p">:</span><span class="n">modelData</span><span class="o">.</span><span class="n">timeStepFraction</span><span class="p">}</span></div>
+            
+<div class="viewcode-block" id="Module_UDEC.createInputFiles"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.createInputFiles">[docs]</a>    <span class="k">def</span> <span class="nf">createInputFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates Input files for UDEC and a batch file to run them all</span>
+<span class="sd">        </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            move towards a  more object oriented method of handling data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: creates UDEC input files and corresponding batch file</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fileNames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printTitle</span><span class="p">(</span><span class="s1">&#39;Creating Input Files for UDEC&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Collecting required UDEC parameters&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getUDECParameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Filling in templates&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="p">[</span><span class="s1">&#39;$sTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">simulationTime</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="p">[</span><span class="s1">&#39;$vTable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getVelocityString</span><span class="p">([</span><span class="n">modelData</span><span class="o">.</span><span class="n">simulationTime</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="p">[</span><span class="s1">&#39;$vel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">modelData</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="p">[</span><span class="s1">&#39;$cStress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="p">[</span><span class="s1">&#39;$mName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="o">+</span><span class="s1">&#39;(&#39;</span><span class="o">+</span><span class="s1">&#39;0&#39;</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;)&#39;</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span>      
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span><span class="s1">&#39;UDEC&#39;</span><span class="p">,</span> <span class="s1">&#39;UDECModel.tpl&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">templateFile</span><span class="p">:</span>
+                <span class="n">template</span> <span class="o">=</span> <span class="n">templateFile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">template</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UDECParameters</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+                <span class="n">fileNames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)_Model.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span><span class="s1">&#39;UDEC&#39;</span><span class="p">,</span><span class="n">fileNames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">modelFile</span><span class="p">:</span>
+                    <span class="n">modelFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Generating UDEC batchrun script&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span><span class="s1">&#39;UDEC&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(batchrun).dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="p">)),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">modelFile</span><span class="p">:</span>
+            <span class="n">batchrun</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fileNames</span><span class="p">)):</span>
+                <span class="n">batchrun</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;new</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">batchrun</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;call </span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">fileNames</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+            <span class="n">modelFile</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">batchrun</span><span class="p">)</span>   
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Module_UDEC.run"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_UDEC.Module_UDEC.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;runs the UDEC Module which creates input files for UDEC, then opens UDEC to allow the user to run UDEC, then compiles the UDEC output to MOUSE compatible output.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: MOUSE DEM data files</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parseInput</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createInputFiles</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">printTitle</span><span class="p">(</span><span class="s1">&#39;Conducting UDEC Simulations&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printSection</span><span class="p">(</span><span class="s1">&#39;Automated UDEC functionality not available yet. UDEC has to be run manually by calling the batch file that was just generated. Please press Enter and Type the following once UDEC initializes </span><span class="se">\n\n\t</span><span class="s1"> </span><span class="se">\&#39;</span><span class="s1">call </span><span class="si">{0}</span><span class="s1">(batchrun).dat</span><span class="se">\&#39;</span><span class="s1"> </span><span class="se">\n\n</span><span class="s1">When the UDEC simulations are complete, please type </span><span class="se">\&#39;</span><span class="s1">quit</span><span class="se">\&#39;</span><span class="s1"> in order to continue&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="p">))</span>
+        <span class="nb">input</span><span class="p">()</span>
+        <span class="n">currentDir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;Modules/UDEC&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;UDEC.lnk&quot;&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;../..&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatOutput</span><span class="p">()</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

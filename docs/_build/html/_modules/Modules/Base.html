@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modules.Base &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Modules.Base</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<div class="viewcode-block" id="ModuleBaseClass"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass">[docs]</a><span class="k">class</span> <span class="nc">ModuleBaseClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a base class containing common module methods and attributes</span>
+
+<span class="sd">    A base module class is implemented here to provide a framework containing required methods and attributes for the MOUSE modules to inherit. The module class contains methods pertaining to I/O routines associated with the module so that each module that is written behaves in a consistent manner and to avoid reimplementation of certain methods.  </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        program (str): String containing name of module software executable file. </span>
+<span class="sd">        parameters (dict): Dictionary of command line parameters as keys and corresponding arguments as entries</span>
+<span class="sd">        suppressText (bool): Suppreses text output from modules if True</span>
+<span class="sd">        suppressErrors (bool): Suppress error output from modules if True</span>
+<span class="sd">        baseName (str): Name of model input file</span>
+<span class="sd">        binaryDirectory(str): Directory in which MOUSE binary data is located</span>
+<span class="sd">        textDirectory(str): Directory in which MOUSE text data is located</span>
+<span class="sd">        inputDirectory(str): Directory in which MOUSE input data is located</span>
+<span class="sd">        outputDirectory(str): Directory in which MOUSE output data is located</span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">baseName</span><span class="p">,</span> <span class="n">parameters</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">suppressText</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">suppressErrors</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for base module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            program (str): String containing name of module software executable file. </span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">            parameters (dict): Dictionary of command line parameters as keys and corresponding arguments as entries</span>
+<span class="sd">            suppressText (bool): Suppreses text output from modules if True</span>
+<span class="sd">            suppressErrors (bool): Suppress error output from modules if True</span>
+<span class="sd">                </span>
+<span class="sd">      &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">program</span> <span class="o">=</span> <span class="n">program</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">suppressText</span> <span class="o">=</span> <span class="n">suppressText</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suppressErrors</span> <span class="o">=</span> <span class="n">suppressErrors</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">baseName</span> <span class="o">=</span> <span class="n">baseName</span>
+        <span class="n">topDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)))</span>
+        <span class="n">dataDirectory</span> <span class="o">=</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">topDirectory</span><span class="p">,</span> <span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">,</span> <span class="s1">&#39;Binary&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">,</span> <span class="s1">&#39;Text&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">,</span> <span class="s1">&#39;Input&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">,</span> <span class="s1">&#39;Output&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ModuleBaseClass.printText"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.printText">[docs]</a>    <span class="k">def</span> <span class="nf">printText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints text to console if not suppressed</span>
+<span class="sd">        </span>
+<span class="sd">        Note:</span>
+<span class="sd">            All text printed to the console should be routed through this function rather than using the built-in print() function. Using this function allows for easy suppression and piping of output.</span>
+<span class="sd">            </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            If text suppression is on, route output to file.</span>
+<span class="sd">    </span>
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): text to be printed to console</span>
+<span class="sd">            end (str, optional): character to be appended to end of print line</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: text printed to the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">suppressText</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="c1">#else save to file</span>
+    
+<div class="viewcode-block" id="ModuleBaseClass.printTitle"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.printTitle">[docs]</a>    <span class="k">def</span> <span class="nf">printTitle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints a title to console. </span>
+<span class="sd">        </span>
+<span class="sd">        Titles are displayed with horizontal lines printed above and below the text and are alligned with the left side of the console.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            title (str): title to be printed to console</span>
+<span class="sd">             </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: title printed to the console</span>
+<span class="sd">               </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">70</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">70</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ModuleBaseClass.printSection"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.printSection">[docs]</a>    <span class="k">def</span> <span class="nf">printSection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints a section name to console. </span>
+<span class="sd">        </span>
+<span class="sd">        Sections are displayed alligned to the left side of the console.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            section (str): section name to be printed to console</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: section name printed to the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="n">section</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ModuleBaseClass.printStatus"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.printStatus">[docs]</a>    <span class="k">def</span> <span class="nf">printStatus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints a status to console. </span>
+
+<span class="sd">        Statuses are displayed proceeding a tab and are follwed by ellipses with no new line character at the end of the print line. </span>
+
+<span class="sd">        Note:</span>
+<span class="sd">        The no new line character at the end of the print line allows the printDone() method to print &#39;Done&#39; at the end of the ellipses after some arbitrary code execution. It is recommended that these two methods always be used together</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            status (str): status to be printed to console</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: status printed to the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{0}</span><span class="s1">...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">status</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ModuleBaseClass.printDone"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.printDone">[docs]</a>    <span class="k">def</span> <span class="nf">printDone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints &#39;Done&#39; to console. </span>
+<span class="sd">              </span>
+<span class="sd">        Note:</span>
+<span class="sd">        It is recommended that this method be used in conjunction with printStatus()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            status (str): status to be printed to console</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: &#39;Done&#39; printed to the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ModuleBaseClass.clearScreen"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.clearScreen">[docs]</a>    <span class="k">def</span> <span class="nf">clearScreen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clears all text from the console. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        None: Clears all text from the console</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>       
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ModuleBaseClass.printErrors"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.printErrors">[docs]</a>    <span class="k">def</span> <span class="nf">printErrors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints error to console if not suppressed</span>
+<span class="sd">        </span>
+<span class="sd">        Note:</span>
+<span class="sd">            All errors caught should be routed through this function. Using this function allows for easy suppression and piping of output.</span>
+<span class="sd"> </span>
+<span class="sd">        Args:</span>
+<span class="sd">            error (str): error to be printed to console</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: error printed to the console</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">suppressErrors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">printText</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
+            
+<div class="viewcode-block" id="ModuleBaseClass.saveData"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.saveData">[docs]</a>    <span class="k">def</span> <span class="nf">saveData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Saves module data as binary using the pickle serialization module</span>
+<span class="sd">    </span>
+<span class="sd">        Args:</span>
+<span class="sd">            data (any): Module data to be serialized and stored in file</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: serialized data in binary file in specified binaryDirectory</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputFileName</span><span class="p">(),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ModuleBaseClass.loadData"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.loadData">[docs]</a>    <span class="k">def</span> <span class="nf">loadData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loads module data from binary using the pickle serialization module</span>
+<span class="sd">    </span>
+<span class="sd">        Args:</span>
+<span class="sd">            data (any): Module data to be serialized and stored in file</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: serialized data in binary file in specified binaryDirectory</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputFileName</span><span class="p">(),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputFileName</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="ModuleBaseClass.updateParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.updateParameters">[docs]</a>    <span class="k">def</span> <span class="nf">updateParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the parameter attribute so that the modul can be run with a different parameter set without being re-instantiated</span>
+<span class="sd">    </span>
+<span class="sd">        Args:</span>
+<span class="sd">            parameters (dict): dictionary of new parameters</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: updates the parameter attribute</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span></div>
+
+<div class="viewcode-block" id="ModuleBaseClass.commandLineArguments"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.commandLineArguments">[docs]</a>    <span class="k">def</span> <span class="nf">commandLineArguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;converts the parameters dictionary to a string which can be passed to the command line when running the specified program.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: string to be passed to command line</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">arguments</span></div>
+        
+<div class="viewcode-block" id="ModuleBaseClass.run"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ModuleBaseClass.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;runs specified program with specified parameters</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: runs specified program with specified parameters</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parseInput</span><span class="p">()</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">program</span><span class="p">,</span> <span class="n">commandLineArguments</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatOutput</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="DemModuleBaseClass"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.DemModuleBaseClass">[docs]</a><span class="k">class</span> <span class="nc">DemModuleBaseClass</span><span class="p">(</span><span class="n">ModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a base class for the DEM modules containing common methods and attributes</span>
+
+<span class="sd">    A base dem module class is implemented here, inheriting from the module base class to provide a framework containing required methods and attributes for the DEM modules to inherit. The module class contains methods pertaining to I/O routines associated with the module so that each module that is written behaves in a consistent manner and to avoid reimplementation of certain methods.  </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        type (str): Type of module </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for DEM Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            program (str): String containing name of module software executable file. </span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">            parameters (dict): Dictionary of command line parameters as keys and corresponding arguments as entries</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">baseName</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;DEM&#39;</span>
+             
+<div class="viewcode-block" id="DemModuleBaseClass.inputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.DemModuleBaseClass.inputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">inputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns full path of input binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of input binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span></div>
+            
+<div class="viewcode-block" id="DemModuleBaseClass.outputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.DemModuleBaseClass.outputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">outputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Returns full path of output binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of output binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="s1">&#39;_DEM.pkl&#39;</span><span class="p">))</span></div></div>
+        
+
+<div class="viewcode-block" id="ParameterEstimationModuleBaseClass"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ParameterEstimationModuleBaseClass">[docs]</a><span class="k">class</span> <span class="nc">ParameterEstimationModuleBaseClass</span><span class="p">(</span><span class="n">ModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a base class for the parameter estimation modules containing common methods and attributes</span>
+
+<span class="sd">    A base parameter estimation module class is implemented here, inheriting from the module base class to provide a framework containing required methods and attributes for the parameter estimation modules to inherit. The module class contains methods pertaining to I/O routines associated with the module so that each module that is written behaves in a consistent manner and to avoid reimplementation of certain methods.  </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        type (str): Type of module </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for parameter estimation Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            program (str): String containing name of module software executable file. </span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">            parameters (dict): Dictionary of command line parameters as keys and corresponding arguments as entries</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">baseName</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>      
+            
+<div class="viewcode-block" id="ParameterEstimationModuleBaseClass.inputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ParameterEstimationModuleBaseClass.inputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">inputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns full path of input binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of input binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+            
+<div class="viewcode-block" id="ParameterEstimationModuleBaseClass.outputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ParameterEstimationModuleBaseClass.outputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">outputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns full path of output binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of output binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="s1">&#39;_DEM.pkl&#39;</span><span class="p">))</span></div></div>
+
+<div class="viewcode-block" id="ContinuumModuleBaseClass"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ContinuumModuleBaseClass">[docs]</a><span class="k">class</span> <span class="nc">ContinuumModuleBaseClass</span><span class="p">(</span><span class="n">ModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a base class for the continuum model modules containing common methods and attributes</span>
+
+<span class="sd">    A base continuum model module class is implemented here, inheriting from the module base class to provide a framework containing required methods and attributes for the continuum model modules to inherit. The module class contains methods pertaining to I/O routines associated with the module so that each module that is written behaves in a consistent manner and to avoid reimplementation of certain methods.  </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        type (str): Type of module </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for continuum model Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            program (str): String containing name of module software executable file. </span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">            parameters (dict): Dictionary of command line parameters as keys and corresponding arguments as entries</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">baseName</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            
+<div class="viewcode-block" id="ContinuumModuleBaseClass.inputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ContinuumModuleBaseClass.inputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">inputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns full path of input binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of input binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+            
+<div class="viewcode-block" id="ContinuumModuleBaseClass.outputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.ContinuumModuleBaseClass.outputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">outputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns full path of output binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of output binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+<div class="viewcode-block" id="HomogenizationModuleBaseClass"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.HomogenizationModuleBaseClass">[docs]</a><span class="k">class</span> <span class="nc">HomogenizationModuleBaseClass</span><span class="p">(</span><span class="n">ModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a base class for the homogenization modules containing common methods and attributes</span>
+
+<span class="sd">    A base homogenization module class is implemented here, inheriting from the module base class to provide a framework containing required methods and attributes for the homogenization modules to inherit. The module class contains methods pertaining to I/O routines associated with the module so that each module that is written behaves in a consistent manner and to avoid reimplementation of certain methods.  </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        type (str): Type of module </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for homogenization Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            program (str): String containing name of module software executable file. </span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">            parameters (dict): Dictionary of command line parameters as keys and corresponding arguments as entries</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">baseName</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;Homogenization&#39;</span>
+        
+            
+<div class="viewcode-block" id="HomogenizationModuleBaseClass.inputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.HomogenizationModuleBaseClass.inputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">inputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets full path of input binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of input binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="s1">&#39;_DEM.pkl&#39;</span><span class="p">))</span></div>
+            
+<div class="viewcode-block" id="HomogenizationModuleBaseClass.outputFileName"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Base.HomogenizationModuleBaseClass.outputFileName">[docs]</a>    <span class="k">def</span> <span class="nf">outputFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>       
+        <span class="sd">&quot;&quot;&quot;Returns full path of output binary data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: full path of output binary data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="s1">&#39;_HOM.pkl&#39;</span><span class="p">))</span></div></div>
+
+
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,18 @@
+************
+Getting Started
+************
+
+Installation Guide
+=============
+
+Installing python interpreter and dependencies
+--------------------------------------------
+
+Installing MOUSE
+----------------
+
+Basic Usage
+=========
+
+Basic Settings
+===========

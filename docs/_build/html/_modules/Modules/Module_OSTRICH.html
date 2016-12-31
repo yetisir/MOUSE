@@ -1,0 +1,491 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modules.Module_OSTRICH &#8212; MOUSE 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Modules.Module_OSTRICH</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>  
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">statistics</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">.Base</span> <span class="k">import</span> <span class="n">ParameterEstimationModuleBaseClass</span>
+
+    
+<div class="viewcode-block" id="importModelData"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.importModelData">[docs]</a><span class="k">def</span> <span class="nf">importModelData</span><span class="p">(</span><span class="n">modelName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports the input model parameters and assigns them to a global modelData variable</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        modelName(str): Name of file containing the model data.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: Assigns model parameters from file to global modelData</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">modelData</span>
+    <span class="n">modelData</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;Data.Input.&#39;</span><span class="o">+</span><span class="n">modelName</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="importMaterialData"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.importMaterialData">[docs]</a><span class="k">def</span> <span class="nf">importMaterialData</span><span class="p">(</span><span class="n">materialName</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports the material parameters and assigns them to a global material variable</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        material(str): Name of file containing the model data.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: Assigns model parameters from file to global material</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">material</span>
+    <span class="n">material</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;Modules.OSTRICH.materials.&#39;</span><span class="o">+</span><span class="n">materialName</span><span class="p">)</span></div>
+ 
+<div class="viewcode-block" id="fillTemplate"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.fillTemplate">[docs]</a><span class="k">def</span> <span class="nf">fillTemplate</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;fills a template file with variable parameters</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        template(str): file path to template file</span>
+<span class="sd">        parameters(dict): dictionary of parameters and corresponding values</span>
+<span class="sd">        file(str): destination file path for filled template</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None: saves filled template to file</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s1">&#39;OSTRICH&#39;</span><span class="p">,</span> <span class="n">template</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">templateFile</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">templateFile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s1">&#39;OSTRICH&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">modelFile</span><span class="p">:</span>
+            <span class="n">modelFile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="getVelocityString"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.getVelocityString">[docs]</a><span class="k">def</span> <span class="nf">getVelocityString</span><span class="p">(</span><span class="n">velTable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a table of relative velocities (from -1 to 1) for the simulation in a linear string format for ABAQUS</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        velTable(list of float): times at which the velocity changes from negative to positive</span>
+<span class="sd">                    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: table of relative velocities (-1 to 1) in ABAQUS format</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">accelTime</span> <span class="o">=</span> <span class="n">velTable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">vString</span> <span class="o">=</span> <span class="s1">&#39;((0, </span><span class="si">{0}</span><span class="s1">), &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">amp</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">velTable</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">vString</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">), (</span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">), &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">velTable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">accelTime</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">velTable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">accelTime</span><span class="p">,</span> <span class="n">amp</span><span class="o">*-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">amp</span> <span class="o">=</span> <span class="n">amp</span><span class="o">*-</span><span class="mi">1</span>
+    <span class="n">vString</span> <span class="o">+=</span> <span class="s1">&#39;(</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">))&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">velTable</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">amp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vString</span></div>
+
+<div class="viewcode-block" id="parserHandler"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.parserHandler">[docs]</a><span class="k">def</span> <span class="nf">parserHandler</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function called after argparse subparser is executed</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        args(argparse.Arguments): arparse parsed command line arguments.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        None: initializes UDEC Module and runs it</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">importModelData</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">Module_OSTRICH</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">M</span><span class="o">.</span><span class="n">parseArguments</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">M</span><span class="o">.</span><span class="n">parseInput</span><span class="p">()</span>
+    <span class="n">M</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="populateArgumentParser"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.populateArgumentParser">[docs]</a><span class="k">def</span> <span class="nf">populateArgumentParser</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds arguments to the argument parser</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        parser(argparse.ArgumentParser): empty argparse subparser</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.ArgumentParser: same argparse supparser, now populated with arguments</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;--name&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span> <span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the file containing the model data without the extension&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">,</span> <span class="s1">&#39;--identity&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;identification Number&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--parallel&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;use parallel processing&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span> <span class="s1">&#39;--cores&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of logical cores to use for parallel processing&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--optimizer&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;ParticleSwarm&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;optimization algorithm&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">parserHandler</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">parser</span></div>
+    
+<div class="viewcode-block" id="Module_OSTRICH"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH">[docs]</a><span class="k">class</span> <span class="nc">Module_OSTRICH</span> <span class="p">(</span><span class="n">ParameterEstimationModuleBaseClass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates the OSTRICH interface for MOUSE</span>
+
+<span class="sd">    This class allows for the generation of the usage of UDEC through the MOUSE framework. As of current, there is still no capacity for full automation due to UDEC API limitations. As such, a batch UDEC script is generated which can then be called in UDEC with one command.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        identity(int): for repeat trials, a different identity can be assigned to each game</span>
+<span class="sd">        MPI(bool): OSTRICH uses parallel processing if True</span>
+<span class="sd">        cores(int): number of logical cores to be used for optimization</span>
+<span class="sd">        optimizer(str): optimization algorithm to use. List can be found in OSTRICH Documentation    </span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">baseName</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes class attributes for parameter estimation Module</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            baseName (str): Name of model input file</span>
+<span class="sd">                         </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">program</span> <span class="o">=</span> <span class="s1">&#39;ostrichmpi.bat&#39;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ParameterEstimationModuleBaseClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">program</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">baseName</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="Module_OSTRICH.parseInput"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.parseInput">[docs]</a>    <span class="k">def</span> <span class="nf">parseInput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses input file</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: creates Ostrich input files</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printTitle</span><span class="p">(</span><span class="s1">&#39;Generating OSTRICH Input Files for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printSection</span><span class="p">(</span><span class="s1">&#39;Filling in Model Templates&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Creating model parameter file&#39;</span><span class="p">)</span>
+        <span class="n">fillTemplate</span><span class="p">(</span><span class="s1">&#39;parameters.tpl&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getModelParameters</span><span class="p">(),</span> <span class="s1">&#39;parameters.py&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Creating OSTRICH input parameter file&#39;</span><span class="p">)</span>
+        <span class="n">fillTemplate</span><span class="p">(</span><span class="s1">&#39;ostIn.tpl&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getOstrichParameters</span><span class="p">(),</span> <span class="s1">&#39;ostIn.txt&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Creating model template file&#39;</span><span class="p">)</span>
+        <span class="n">fillTemplate</span><span class="p">(</span><span class="s1">&#39;runAbaqus.tpl&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getModelConstants</span><span class="p">(),</span> <span class="s1">&#39;runAbaqus.temp.tpl&#39;</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="Module_OSTRICH.formatOutput"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.formatOutput">[docs]</a>    <span class="k">def</span> <span class="nf">formatOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Formats parameter estimation data for MOUSE</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: Copies OSTRICH output files to output directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Saving estimated parameter set&#39;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s1">&#39;OSTRICH&#39;</span><span class="p">,</span> <span class="s1">&#39;OstOutput0.txt&#39;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">)_PAR.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">abaqusMaterial</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>            </div>
+        
+<div class="viewcode-block" id="Module_OSTRICH.setParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.setParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets module parameters</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            parameters(dict): new parameters to be set</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: Sets module parameters</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+        
+<div class="viewcode-block" id="Module_OSTRICH.run"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;runs the OSTRICH Module which creates input files for OSTRICH, then runs OSTRICH</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: OSTRICH data files</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printTitle</span><span class="p">(</span><span class="s1">&#39;Running OSTRICH Optimization Software&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printSection</span><span class="p">(</span><span class="s1">&#39;Initializing OSTRICH&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s1">&#39;OSTRICH&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Cleaning up OSTRICH mess from previous run&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cleanup.bat&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">)):</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;fittedHistory&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)_</span><span class="si">{3}</span><span class="s1">_fittedHistory.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">modelData</span><span class="o">.</span><span class="n">abaqusMaterial</span><span class="p">)),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printStatus</span><span class="p">(</span><span class="s1">&#39;Initializing OSTRICH&#39;</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printDone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MPI</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Running OSTRICH MPI</span><span class="se">\n\t</span><span class="s1">Progress...&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;mpirun.bat &gt;NUL 2&gt;OstErrors.log&#39;</span><span class="p">)</span>
+            <span class="k">while</span> <span class="mi">1</span><span class="p">:</span> 
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;OstStatus0.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                        <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+                        <span class="n">comp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">18</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="n">numString</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">numString</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">numString</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;100%&#39;</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Computing parameter statistics...&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                            <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">runningProcesses</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">pids</span><span class="p">()</span>
+                                <span class="n">br</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">runningProcesses</span><span class="p">:</span>
+                                    <span class="k">try</span><span class="p">:</span>
+                                        <span class="k">if</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;OstrichMPI.exe&#39;</span><span class="p">:</span>
+                                            <span class="n">br</span> <span class="o">=</span> <span class="kc">False</span>
+                                    <span class="k">except</span><span class="p">:</span>
+                                        <span class="k">pass</span>
+                                <span class="k">if</span> <span class="n">br</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Done&#39;</span><span class="p">)</span>        
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shutting Down OSTRICH</span><span class="se">\n\t</span><span class="s1">Progress...&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                            <span class="n">sleepTime</span> <span class="o">=</span> <span class="mi">10</span>
+                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sleepTime</span><span class="p">):</span>
+                                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                                <span class="n">numString</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="o">/</span><span class="n">sleepTime</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="n">numString</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">numString</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;100%&#39;</span><span class="p">)</span>
+                            <span class="k">break</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="ne">PermissionError</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Running Serial OSTRICH&#39;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;ostrich.exe&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Done&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shutting Down OSTRICH...&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;\Done&#39;</span><span class="p">)</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatOutput</span><span class="p">()</span>
+     
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;cleanup.bat&#39;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">)</span></div>
+        
+ 
+<div class="viewcode-block" id="Module_OSTRICH.getModelParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.getModelParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getModelParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns abaqus model input parameters</span>
+<span class="sd">        </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            move towards a  more object oriented method of handling data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: dictionary of abaqus input parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">parameters</span> <span class="o">=</span>  <span class="p">{</span><span class="s1">&#39;$$mSize&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="p">,</span>
+                                <span class="s1">&#39;$$mName&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="s1">&#39;$$sName&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">))],</span>
+                                <span class="s1">&#39;$$nSteps&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">numberOfSteps</span><span class="p">,</span>
+                                <span class="s1">&#39;$$rho&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span>
+                                <span class="s1">&#39;$$confStress&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">],</span> <span class="c1">#***********************************************************fix for different confining stresses!!!!!</span>
+                                <span class="s1">&#39;$$approxStrain&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">velocity</span><span class="o">*</span><span class="n">modelData</span><span class="o">.</span><span class="n">simulationTime</span><span class="o">/</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span><span class="p">,</span>
+                                <span class="s1">&#39;$$vel&#39;</span><span class="p">:</span><span class="n">modelData</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span>
+                                <span class="s1">&#39;$$sTime&#39;</span><span class="p">:</span><span class="n">modelData</span><span class="o">.</span><span class="n">simulationTime</span><span class="p">,</span>
+                                <span class="s1">&#39;$$vString&#39;</span><span class="p">:</span><span class="n">getVelocityString</span><span class="p">([</span><span class="n">modelData</span><span class="o">.</span><span class="n">simulationTime</span><span class="p">]),</span>
+                                <span class="s1">&#39;$$boundaryDisplacements&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBoundaryDisplacements</span><span class="p">(),</span>
+                                <span class="s1">&#39;$$boundaryStresses&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBoundaryStresses</span><span class="p">(),</span>
+                                <span class="s1">&#39;$$relVars&#39;</span><span class="p">:</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">,</span> 
+                                <span class="s1">&#39;$$abaqusMaterial&#39;</span><span class="p">:</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">modelData</span><span class="o">.</span><span class="n">abaqusMaterial</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">parameters</span></div>
+
+<div class="viewcode-block" id="Module_OSTRICH.getOstrichParameters"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.getOstrichParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getOstrichParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frontBias</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns OSTRICH parameters</span>
+<span class="sd">        </span>
+<span class="sd">        Todo:</span>
+<span class="sd">            move towards a  more object oriented method of handling data</span>
+<span class="sd">                        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: dictionary of udec parameters</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">importMaterialData</span> <span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">abaqusMaterial</span><span class="p">)</span>
+        <span class="n">ostrichParametersText</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> 
+        <span class="n">ostrichParameters</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">ostrichParameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">ostrichParameters</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">ostrichParameters</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span>
+                <span class="n">newRecord</span> <span class="o">=</span> <span class="s1">&#39;$&#39;</span> <span class="o">+</span> <span class="n">parameter</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;init&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;low&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">])</span> <span class="o">+</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">none</span><span class="se">\t</span><span class="s1">none</span><span class="se">\t</span><span class="s1">none</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">ostrichParametersText</span> <span class="o">+=</span> <span class="n">newRecord</span>
+     
+        <span class="n">observations</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">obsNo</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)_HOM.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">)),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bundleFile</span><span class="p">:</span>
+                <span class="n">bundle</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">bundleFile</span><span class="p">)</span>
+                <span class="n">timeHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">stressHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">strainHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">averageS11</span> <span class="o">=</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stressHistory</span><span class="p">])</span>
+            <span class="n">averageS22</span> <span class="o">=</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stressHistory</span><span class="p">])</span>
+            <span class="n">averageS12</span> <span class="o">=</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stressHistory</span><span class="p">])</span>
+            <span class="n">averageLE11</span> <span class="o">=</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strainHistory</span><span class="p">])</span>
+            <span class="n">averageLE22</span> <span class="o">=</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strainHistory</span><span class="p">])</span>
+            <span class="n">averageLE12</span> <span class="o">=</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strainHistory</span><span class="p">])</span>
+            <span class="n">averageS</span> <span class="o">=</span> <span class="p">(</span><span class="n">averageS11</span><span class="o">+</span><span class="n">averageS12</span><span class="o">+</span><span class="n">averageS22</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+            <span class="n">averageLE</span> <span class="o">=</span> <span class="p">(</span><span class="n">averageLE11</span><span class="o">+</span><span class="n">averageLE12</span><span class="o">+</span><span class="n">averageLE22</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span>
+            
+            <span class="n">numObservations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeHistory</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="c1">#TODO: add weightings so strain and stress can be used together</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">numObservations</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;S11&#39;</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">=</span> <span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span>
+                        <span class="c1"># w = 1/averageS</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;S22&#39;</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">=</span> <span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="mi">3</span>
+                        <span class="c1"># w = 1/averageS</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;S12&#39;</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">=</span> <span class="n">stressHistory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="mi">4</span>
+                        <span class="c1"># w = 1/averageS</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;LE11&#39;</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">=</span> <span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="mi">5</span>
+                        <span class="c1"># w = 1/averageLE</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;LE22&#39;</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">=</span> <span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="mi">6</span>
+                        <span class="c1"># w = 1/averageLE</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">modelData</span><span class="o">.</span><span class="n">relevantMeasurements</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;LE12&#39;</span><span class="p">:</span>
+                        <span class="n">o</span> <span class="o">=</span> <span class="n">strainHistory</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="mi">7</span>
+                        <span class="c1"># w = 1/averageLE</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">NaN</span><span class="p">):</span>
+                        <span class="n">l</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="p">(</span><span class="n">numObservations</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span> <span class="n">i</span> 
+                        <span class="c1">#obsNo = k*(numObservations-1)*len(modelData.relevantMeasurements) + (i-1)*len(modelData.relevantMeasurements) + (j +1)</span>
+                        <span class="n">obsNo</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">bias</span> <span class="o">=</span> <span class="n">frontBias</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">bias</span><span class="p">)</span><span class="o">/</span><span class="n">numObservations</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="n">bias</span><span class="p">)</span>
+                        <span class="n">newObservation</span> <span class="o">=</span> <span class="s1">&#39;obs</span><span class="si">{}</span><span class="s1"> </span><span class="se">\t\t</span><span class="si">{:10f}</span><span class="s1"> </span><span class="se">\t</span><span class="si">{}</span><span class="s1"> </span><span class="se">\t</span><span class="s1">output.dat </span><span class="se">\t</span><span class="s1">OST_NULL </span><span class="se">\t</span><span class="si">{}</span><span class="s1"> </span><span class="se">\t\t</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obsNo</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+                        <span class="n">observations</span> <span class="o">+=</span> <span class="n">newObservation</span>
+
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$$ostrichParameters&#39;</span><span class="p">:</span><span class="n">ostrichParametersText</span><span class="p">,</span> 
+                      <span class="s1">&#39;$$ostrichObservations&#39;</span><span class="p">:</span><span class="n">observations</span><span class="p">,</span>
+                      <span class="s1">&#39;$$pType&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">parameters</span></div>
+    
+<div class="viewcode-block" id="Module_OSTRICH.getModelConstants"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.getModelConstants">[docs]</a>    <span class="k">def</span> <span class="nf">getModelConstants</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">ostrichParameters</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">material</span><span class="o">.</span><span class="n">ostrichParameters</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameter</span>
+
+        <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;$$$materialDef&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">abaqusTemplate</span>
+        <span class="k">return</span> <span class="n">parameters</span></div>
+    
+<div class="viewcode-block" id="Module_OSTRICH.getBoundaryDisplacements"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.getBoundaryDisplacements">[docs]</a>    <span class="k">def</span> <span class="nf">getBoundaryDisplacements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">displacements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)_HOM.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">)),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bundleFile</span><span class="p">:</span>
+                <span class="n">bundle</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">bundleFile</span><span class="p">)</span>
+                <span class="n">timeHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">stressHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">strainHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">LE11</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strainHistory</span><span class="p">]</span>
+            <span class="n">LE22</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strainHistory</span><span class="p">]</span>
+            
+            <span class="n">U1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">LE11</span><span class="p">]</span>
+            <span class="n">U2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="n">modelData</span><span class="o">.</span><span class="n">modelSize</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">LE22</span><span class="p">]</span>
+
+            <span class="n">v1Tuple</span> <span class="o">=</span> <span class="p">[(</span><span class="n">timeHistory</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">U1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">timeHistory</span><span class="p">))]</span>
+            <span class="n">v2Tuple</span> <span class="o">=</span> <span class="p">[(</span><span class="n">timeHistory</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">U2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">timeHistory</span><span class="p">))]</span>
+            <span class="n">displacements</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v1Tuple</span><span class="p">,</span> <span class="n">v2Tuple</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">displacements</span></div>
+
+<div class="viewcode-block" id="Module_OSTRICH.getBoundaryStresses"><a class="viewcode-back" href="../../MouseReferenceManual.html#Modules.Module_OSTRICH.Module_OSTRICH.getBoundaryStresses">[docs]</a>    <span class="k">def</span> <span class="nf">getBoundaryStresses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stresses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modelData</span><span class="o">.</span><span class="n">confiningStress</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">binaryDirectory</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">.</span><span class="si">{2}</span><span class="s1">)_HOM.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseName</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">)),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bundleFile</span><span class="p">:</span>
+                <span class="n">bundle</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">bundleFile</span><span class="p">)</span>
+                <span class="n">timeHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">stressHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">strainHistory</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">S11</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stressHistory</span><span class="p">]</span>
+            <span class="n">S22</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stressHistory</span><span class="p">]</span>
+            
+            <span class="n">S1Tuple</span> <span class="o">=</span> <span class="p">[(</span><span class="n">timeHistory</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">S11</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">timeHistory</span><span class="p">))]</span>
+            <span class="n">S2Tuple</span> <span class="o">=</span> <span class="p">[(</span><span class="n">timeHistory</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">S22</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">timeHistory</span><span class="p">))]</span>
+            <span class="n">stresses</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">S1Tuple</span><span class="p">,</span> <span class="n">S2Tuple</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">stresses</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, M. Yetisir.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
