@@ -6,7 +6,7 @@ SPHINXOPTS    = -b
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = MOUSE
 SOURCEDIR     = .
-BUILDDIR        = build
+BUILDDIR        = _build
 PDF               = ../manual.pdf
 
 
