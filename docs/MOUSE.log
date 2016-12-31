@@ -1,0 +1,32 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.9.14)  29 DEC 2016 15:26
+entering extended mode
+**_build/latex/MOUSE.tex
+(_build/latex/MOUSE.tex
+LaTeX2e <2014/05/01>
+Babel <3.9l> and hyphenation patterns for 68 languages loaded.
+
+! LaTeX Error: File `sphinxmanual.cls' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: cls)
+
+Enter file name: x
+
+ )
+(\end occurred when \ifx on line 4 was incomplete)
+(\end occurred when \ifx on line 4 was incomplete) 
+Here is how much of TeX's memory you used:
+ 13 strings out of 493698
+ 207 string characters out of 3144415
+ 52149 words of memory out of 3000000
+ 3436 multiletter control sequences out of 15000+200000
+ 3640 words of font info for 14 fonts, out of 3000000 for 9000
+ 1025 hyphenation exceptions out of 8191
+ 10i,0n,7p,80b,8s stack positions out of 5000i,500n,10000p,200000b,50000s
+
+No pages of output.
+PDF statistics:
+ 0 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
