@@ -5,6 +5,7 @@ import os
 import sys
 import pickle
 
+
 class ModuleBaseClass(object):
     """Creates a base class containing common module methods and attributes
 
@@ -20,7 +21,9 @@ class ModuleBaseClass(object):
         textDirectory(str): Directory in which MOUSE text data is located
         inputDirectory(str): Directory in which MOUSE input data is located
         outputDirectory(str): Directory in which MOUSE output data is located
-    """        
+        
+    """ 
+    
     def __init__(self, program, baseName, parameters = {}, suppressText = False, suppressErrors = True):
         """Initializes class attributes for base module
         
@@ -225,7 +228,9 @@ class DemModuleBaseClass(ModuleBaseClass):
     
     Attributes:
         type (str): Type of module 
+        
     """        
+    
     def __init__(self, program, parameters, baseName):
         """Initializes class attributes for DEM Module
         
@@ -243,6 +248,7 @@ class DemModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of input binary data
+            
         """
         return ''
             
@@ -251,6 +257,7 @@ class DemModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of output binary data
+            
         """
         return os.path.join(self.binaryDirectory, '{0}{1}'.format(self.baseName, '_DEM.pkl'))
         
@@ -262,7 +269,9 @@ class ParameterEstimationModuleBaseClass(ModuleBaseClass):
     
     Attributes:
         type (str): Type of module 
+        
     """        
+    
     def __init__(self, program, parameters, baseName):
         """Initializes class attributes for parameter estimation Module
         
@@ -279,6 +288,7 @@ class ParameterEstimationModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of input binary data
+            
         """
         pass
             
@@ -287,6 +297,7 @@ class ParameterEstimationModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of output binary data
+            
         """
         return os.path.join(self.textDirectory, '{0}{1}'.format(self.baseName, '_DEM.pkl'))
 
@@ -296,8 +307,10 @@ class ContinuumModuleBaseClass(ModuleBaseClass):
     A base continuum model module class is implemented here, inheriting from the module base class to provide a framework containing required methods and attributes for the continuum model modules to inherit. The module class contains methods pertaining to I/O routines associated with the module so that each module that is written behaves in a consistent manner and to avoid reimplementation of certain methods.  
     
     Attributes:
-        type (str): Type of module 
+        type (str): Type of module
+        
     """        
+    
     def __init__(self, program, parameters, baseName):
         """Initializes class attributes for continuum model Module
         
@@ -314,6 +327,7 @@ class ContinuumModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of input binary data
+            
         """
         pass
             
@@ -322,6 +336,7 @@ class ContinuumModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of output binary data
+            
         """
         pass
 
@@ -332,7 +347,9 @@ class HomogenizationModuleBaseClass(ModuleBaseClass):
     
     Attributes:
         type (str): Type of module 
+        
     """        
+    
     def __init__(self, program, parameters, baseName):
         """Initializes class attributes for homogenization Module
         
@@ -351,6 +368,7 @@ class HomogenizationModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of input binary data
+            
         """
         return os.path.join(self.binaryDirectory, '{0}{1}'.format(self.baseName, '_DEM.pkl'))
             
@@ -359,6 +377,7 @@ class HomogenizationModuleBaseClass(ModuleBaseClass):
                         
         Returns:
             str: full path of output binary data
+            
         """
         return os.path.join(self.binaryDirectory, '{0}{1}'.format(self.baseName, '_HOM.pkl'))
 
